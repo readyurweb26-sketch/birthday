@@ -2,21 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Slideshow · Video End</title>
   <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
   <style>
     /* ── reset & base ── */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --app-height: 100vh; /* set precisely by JS, handles mobile browser chrome */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
     html, body {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: var(--app-height);
       overflow: hidden;
+      overscroll-behavior: none;
       background: #000;
-      font-family: 'Playfair Display', serif;
+      font-family: 'Playfair Display', Georgia, serif;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .scene {
-      width: 100vw; height: 100vh;
+      width: 100vw;
+      height: var(--app-height);
       position: relative;
       background: #000;
       overflow: hidden;
@@ -26,16 +44,16 @@
     .slides-wrapper {
       display: flex;
       flex-direction: column;
-      width: 100%; height: 100%;
+      width: 100%;
       transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
       will-change: transform;
     }
 
     /* ── each slide ── */
     .slide {
-      flex: 0 0 100vh;
+      flex: none;
       width: 100vw;
-      height: 100vh;
+      height: var(--app-height);
       position: relative;
       overflow: hidden;
     }
@@ -44,11 +62,13 @@
       width: 100%; height: 100%;
       overflow: hidden;
       position: relative;
+      background: #0a0a0a;
     }
 
     .slide .img-wrap img {
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: center;
       display: block;
       will-change: transform;
       animation: kenBurns 20s ease-in-out infinite alternate;
@@ -64,11 +84,14 @@
     .slide .overlay {
       position: absolute;
       inset: 0;
-      background: rgba(8, 4, 18, 0.35);
       background: linear-gradient(180deg, rgba(8, 4, 18, 0.25) 0%, rgba(8, 4, 18, 0.55) 100%);
       display: flex;
       flex-direction: column;
-      padding: 2rem;
+      padding: clamp(1.25rem, 5vw, 3.5rem);
+      padding-top: calc(clamp(1.25rem, 5vw, 3.5rem) + var(--safe-top));
+      padding-bottom: calc(clamp(1.25rem, 5vw, 3.5rem) + var(--safe-bottom));
+      padding-left: calc(clamp(1.25rem, 5vw, 3.5rem) + var(--safe-left));
+      padding-right: calc(clamp(1.25rem, 5vw, 3.5rem) + var(--safe-right));
       pointer-events: none;
     }
 
@@ -99,9 +122,9 @@
     }
 
     .slide .line {
-      font-size: clamp(1.2rem, 4.5vw, 2.8rem);
+      font-size: clamp(1.05rem, 4.2vw, 2.6rem);
       font-weight: 400;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
       color: #f0e8f0;
       text-shadow: 0 4px 30px rgba(0,0,0,0.8), 0 2px 12px rgba(0,0,0,0.5);
       opacity: 0;
@@ -110,7 +133,7 @@
       will-change: transform, opacity;
       line-height: 1.4;
       margin: 0.15rem 0;
-      max-width: 80%;
+      max-width: min(85%, 780px);
     }
 
     .slide.active .line {
@@ -127,11 +150,11 @@
     /* ── hold indicator ── */
     .hold-indicator {
       position: fixed;
-      bottom: 40px;
+      bottom: calc(40px + var(--safe-bottom));
       left: 50%;
       transform: translateX(-50%);
       z-index: 15;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 11px;
       font-weight: 300;
       letter-spacing: 0.15em;
@@ -140,6 +163,7 @@
       transition: opacity 0.8s ease;
       pointer-events: none;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .hold-indicator.visible { opacity: 1; }
 
@@ -147,7 +171,7 @@
     .video-overlay {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      width: 100vw; height: var(--app-height);
       background: #000;
       display: flex;
       align-items: center;
@@ -165,7 +189,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.07; /* 5‑10% visible */
+      opacity: 0.07;
       transition: opacity 2s ease;
     }
     .video-overlay.show video {
@@ -175,13 +199,62 @@
     /* ── audio controls hidden ── */
     .audio-controls { display: none !important; }
 
-    /* ── responsive ── */
-    @media (max-width: 640px) {
-      .slide .line { font-size: clamp(1rem, 4vw, 2rem); max-width: 90%; }
-      .hold-indicator { bottom: 28px; font-size: 10px; }
+    /* ═══ RESPONSIVE BREAKPOINTS ═══ */
+
+    /* small phones */
+    @media (max-width: 380px) {
+      .slide .line { font-size: clamp(0.85rem, 3.6vw, 1.4rem); line-height: 1.35; }
+      .hold-indicator { font-size: 9.5px; bottom: calc(24px + var(--safe-bottom)); }
     }
-    @media (max-width: 420px) {
-      .slide .line { font-size: clamp(0.9rem, 3.5vw, 1.6rem); }
+
+    /* phones */
+    @media (min-width: 381px) and (max-width: 640px) {
+      .slide .line { max-width: 92%; }
+    }
+
+    /* tablets (portrait & landscape) */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .slide .line { font-size: clamp(1.4rem, 3.6vw, 2.4rem); max-width: 75%; }
+    }
+
+    /* laptops & desktops */
+    @media (min-width: 1025px) {
+      .slide .line { font-size: clamp(1.6rem, 2.6vw, 3rem); max-width: 60%; }
+      .hold-indicator { font-size: 12px; }
+    }
+
+    /* large desktop / 4K */
+    @media (min-width: 1600px) {
+      .slide .line { font-size: clamp(2rem, 2.2vw, 3.6rem); max-width: 55%; }
+    }
+
+    /* short viewports (landscape phones, split-screen) */
+    @media (max-height: 480px) {
+      .slide .overlay { padding-top: calc(0.75rem + var(--safe-top)); padding-bottom: calc(0.75rem + var(--safe-bottom)); }
+      .slide .line { font-size: clamp(0.8rem, 3.4vh, 1.6rem); margin: 0.08rem 0; line-height: 1.25; }
+      .hold-indicator { bottom: calc(14px + var(--safe-bottom)); font-size: 9px; }
+    }
+
+    /* landscape phones specifically */
+    @media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+      .slide .line { max-width: 70%; }
+    }
+
+    /* foldables / very wide narrow screens */
+    @media (min-aspect-ratio: 21/9) {
+      .slide .line { max-width: 50%; }
+    }
+
+    /* reduced motion accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .slide .img-wrap img { animation: none; }
+      .slides-wrapper { transition: none !important; }
+      .slide .line { transition-duration: 0.3s !important; }
+    }
+
+    /* high-density screens: crisper text shadow */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .slide .line { text-shadow: 0 3px 24px rgba(0,0,0,0.85), 0 1px 8px rgba(0,0,0,0.6); }
     }
 
     .scene { opacity: 0; animation: fadeIn 1.2s ease forwards; }
@@ -193,23 +266,19 @@
 <body>
 
   <div class="scene" id="scene">
-    <!-- slides container -->
     <div class="slides-wrapper" id="slidesWrapper"></div>
 
-    <!-- hold indicator -->
     <div class="hold-indicator" id="holdIndicator">
       <span class="pause-icon">⏸</span> paused
     </div>
 
-    <!-- video overlay (end screen) -->
     <div class="video-overlay" id="videoOverlay">
-      <video id="endVideo" muted playsinline>
+      <video id="endVideo" muted playsinline webkit-playsinline>
         <source src="" type="video/mp4">
         Your browser does not support the video tag.
       </video>
     </div>
 
-    <!-- hidden audio controls placeholder -->
     <div class="audio-controls"></div>
   </div>
 
@@ -221,7 +290,6 @@
       //  ★  USER CONFIGURATION  ★
       // ═══════════════════════════════════════════════════
 
-      // ── 1. IMAGES (full screen, with ken burns) ──
       const IMAGES = [
         'https://picsum.photos/seed/poem1/1920/1080',
         'https://picsum.photos/seed/poem2/1920/1080',
@@ -235,22 +303,17 @@
         'https://picsum.photos/seed/poem10/1920/1080'
       ];
 
-      // ── 2. VIDEO (end screen) ──
-      // Replace with your own video URL.
-      const VIDEO_URL = 'Videos/us.mp4'; // e.g. 'https://example.com/your-video.mp4'
+      const VIDEO_URL = 'Videos/us.mp4';
 
-      // ── 3. AUDIO CONFIG ──
       const AUDIO_CONFIG = {
-        type: 'file',          // 'preset' or 'file'
-        presetName: null,   // 'ambient', 'piano', 'bells', 'drone'
+        type: 'file',
+        presetName: null,
         fileUrl: 'audio/ed-sheeran-photograph.mp3',
         volume: 0.30
       };
 
-      // ── 4. SCROLL SPEED (ms) ──
       const SCROLL_INTERVAL = 5000;
 
-      // ── 5. SLIDE CONTENT (text lines + alignment) ──
       const SLIDES = [
         { lines: ['✨ 2027 hasn’t arrived yet…','but whenever you open this,','know that someone out there','is already planning something','more beautiful for you. 💖'], align: 'center' },
         { lines: ['This space is reserved','for your wish —','a dream, a hope,','a promise.'], align: 'top-left' },
@@ -273,12 +336,38 @@
       let autoScrollInterval = null;
       let isHeld = false;
       let isTransitioning = false;
-      let hasEnded = false;   // true when we've triggered the end screen
+      let hasEnded = false;
+      let appHeight = window.innerHeight;
 
       const wrapper = document.getElementById('slidesWrapper');
       const holdIndicator = document.getElementById('holdIndicator');
       const videoOverlay = document.getElementById('videoOverlay');
       const endVideo = document.getElementById('endVideo');
+
+      // ── true viewport height fix (mobile browser chrome, notches, keyboard) ──
+      function setAppHeight() {
+        appHeight = window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', appHeight + 'px');
+        // reposition instantly without animating on resize
+        if (wrapper) {
+          const prevTransition = wrapper.style.transition;
+          wrapper.style.transition = 'none';
+          wrapper.style.transform = `translateY(-${currentIndex * appHeight}px)`;
+          void wrapper.offsetHeight; // force reflow
+          wrapper.style.transition = prevTransition;
+        }
+      }
+
+      let resizeTimer = null;
+      function debouncedResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setAppHeight, 120);
+      }
+      window.addEventListener('resize', debouncedResize, { passive: true });
+      window.addEventListener('orientationchange', () => setTimeout(setAppHeight, 200), { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', debouncedResize, { passive: true });
+      }
 
       // ── render slides ──
       function renderSlides() {
@@ -294,7 +383,8 @@
           const imgUrl = IMAGES[i % IMAGES.length] || 'https://picsum.photos/seed/default/1920/1080';
           img.src = imgUrl;
           img.alt = 'poetry background';
-          img.loading = 'lazy';
+          img.loading = i === 0 ? 'eager' : 'lazy';
+          img.decoding = 'async';
           imgWrap.appendChild(img);
           slide.appendChild(imgWrap);
 
@@ -314,11 +404,10 @@
         }
       }
 
-      // ── update slide position ──
+      // ── update slide position (uses measured px height, not vh) ──
       function goTo(index, immediate) {
         if (isTransitioning || hasEnded) return;
         if (index >= totalSlides) {
-          // end of slides → show video overlay
           showEndScreen();
           return;
         }
@@ -327,7 +416,7 @@
         isTransitioning = true;
         const duration = immediate ? '0s' : '1.2s';
         wrapper.style.transition = `transform ${duration} cubic-bezier(0.23, 1, 0.32, 1)`;
-        wrapper.style.transform = `translateY(-${index * 100}vh)`;
+        wrapper.style.transform = `translateY(-${index * appHeight}px)`;
 
         document.querySelectorAll('.slide').forEach((el, i) => {
           el.classList.toggle('active', i === index);
@@ -345,31 +434,23 @@
         goTo(currentIndex + 1);
       }
 
-      // ── show end screen (video overlay) ──
       function showEndScreen() {
         if (hasEnded) return;
         hasEnded = true;
         stopAutoScroll();
-
-        // stop background music (fade out)
         fadeOutAudio();
 
-        // fade out slides
         wrapper.style.transition = 'opacity 1.5s ease';
         wrapper.style.opacity = '0';
 
         setTimeout(() => {
-          // show video overlay
           videoOverlay.classList.add('show');
           if (endVideo.src) {
-            endVideo.play().catch(() => {
-              // if autoplay fails, user can click
-            });
+            endVideo.play().catch(() => {});
           }
         }, 1600);
       }
 
-      // ── auto-scroll ──
       function startAutoScroll() {
         stopAutoScroll();
         if (hasEnded) return;
@@ -391,7 +472,6 @@
         if (!isHeld && !hasEnded) startAutoScroll();
       }
 
-      // ── hold / pause ──
       function setHold(hold) {
         isHeld = hold;
         if (hold) {
@@ -403,22 +483,25 @@
         }
       }
 
-      // ── event listeners for hold ──
+      // ── pointer events (unifies mouse + touch, more reliable across devices) ──
       const sceneEl = document.getElementById('scene');
-      sceneEl.addEventListener('mousedown', () => setHold(true));
-      sceneEl.addEventListener('mouseup', () => setHold(false));
-      sceneEl.addEventListener('mouseleave', () => { if (isHeld) setHold(false); });
-      sceneEl.addEventListener('touchstart', (e) => {
+      let pointerActive = false;
+
+      sceneEl.addEventListener('pointerdown', (e) => {
         if (e.target.closest('.video-overlay')) return;
+        pointerActive = true;
         setHold(true);
       });
-      sceneEl.addEventListener('touchend', (e) => {
-        if (e.target.closest('.video-overlay')) return;
+      const releasePointer = (e) => {
+        if (!pointerActive) return;
+        pointerActive = false;
         setHold(false);
-      });
-      sceneEl.addEventListener('touchcancel', () => setHold(false));
+      };
+      sceneEl.addEventListener('pointerup', releasePointer);
+      sceneEl.addEventListener('pointercancel', releasePointer);
+      sceneEl.addEventListener('pointerleave', releasePointer);
 
-      // ── keyboard ──
+      // ── keyboard (laptop/desktop) ──
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
           e.preventDefault();
@@ -611,6 +694,7 @@
           if (!audioElement) {
             audioElement = new Audio();
             audioElement.loop = true;
+            audioElement.preload = 'auto';
           }
           audioElement.src = AUDIO_CONFIG.fileUrl;
           audioElement.volume = AUDIO_CONFIG.volume;
@@ -641,47 +725,65 @@
       }
 
       function fadeOutAudio() {
-        // fade master gain to 0 over 1.5 seconds
         if (masterGain) {
           try {
             const currentTime = audioContext.currentTime;
             masterGain.gain.setValueAtTime(masterGain.gain.value, currentTime);
             masterGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.5);
-            // after fade, stop audio nodes
-            setTimeout(() => {
-              stopAudio();
-            }, 1600);
+            setTimeout(() => { stopAudio(); }, 1600);
+          } catch (_) {}
+        }
+        if (audioElement) {
+          try {
+            let vol = audioElement.volume;
+            const fade = setInterval(() => {
+              vol = Math.max(0, vol - 0.05);
+              audioElement.volume = vol;
+              if (vol <= 0) { clearInterval(fade); audioElement.pause(); }
+            }, 75);
           } catch (_) {}
         }
       }
 
       function tryAutoPlay() {
         initAudio();
-        if (audioContext && audioContext.state === 'suspended') {
-          const resume = () => {
-            audioContext.resume().then(() => {
-              document.removeEventListener('click', resume);
-              document.removeEventListener('touchstart', resume);
-              document.removeEventListener('keydown', resume);
-            }).catch(() => {});
-          };
-          document.addEventListener('click', resume);
-          document.addEventListener('touchstart', resume);
-          document.addEventListener('keydown', resume);
-        }
+
+        // Browsers block audio autoplay until the user interacts with the page.
+        // Retry both the Web Audio context AND the file-based <audio> element
+        // on the first genuine interaction, otherwise 'file' mode audio never starts.
+        const resume = () => {
+          if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().catch(() => {});
+          }
+          if (audioElement && audioElement.paused) {
+            audioElement.play().catch(() => {});
+          }
+          document.removeEventListener('click', resume);
+          document.removeEventListener('touchstart', resume);
+          document.removeEventListener('keydown', resume);
+        };
+        document.addEventListener('click', resume);
+        document.addEventListener('touchstart', resume);
+        document.addEventListener('keydown', resume);
       }
 
-      // ── setup video ──
       function setupVideo() {
         if (VIDEO_URL) {
+          endVideo.loop = false; // play once, never repeat
           endVideo.src = VIDEO_URL;
           endVideo.load();
-          endVideo.muted = false; // allow its own audio
+          endVideo.muted = false;
+
+          // once the video finishes, stop everything and hold on a pure black screen
+          endVideo.addEventListener('ended', () => {
+            endVideo.pause();
+            endVideo.style.opacity = '0';
+          });
         }
       }
 
-      // ── init ──
       function init() {
+        setAppHeight();
         renderSlides();
         goTo(0, true);
         startAutoScroll();
@@ -689,26 +791,8 @@
         setupVideo();
       }
 
-      // override showEndScreen to also play video
-      const originalShowEndScreen = showEndScreen;
-      showEndScreen = function() {
-        if (hasEnded) return;
-        hasEnded = true;
-        stopAutoScroll();
-        fadeOutAudio();
-        wrapper.style.transition = 'opacity 1.5s ease';
-        wrapper.style.opacity = '0';
-        setTimeout(() => {
-          videoOverlay.classList.add('show');
-          if (endVideo.src) {
-            endVideo.play().catch(() => {});
-          }
-        }, 1600);
-      };
-
       init();
 
-      // Expose for debugging
       window.__slideshow = { goTo, next, setHold, currentIndex: () => currentIndex };
 
     })();
