@@ -1,0 +1,118 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>✨ Happy Birthday – Choose Your Year ✨</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+
+    <!-- Preconnect for faster font & icon loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+
+    <!-- Google Fonts with display=swap to avoid invisible text -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons – load asynchronously -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Countdown Overlay -->
+    <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-number" id="countdownNumber">3</div>
+    </div>
+
+    <canvas id="effectsCanvas"></canvas>
+
+    <!-- Top Right Glass Buttons -->
+    <div class="top-right-buttons">
+        <button id="guideBtn" class="glass-btn">
+            <i data-lucide="info"></i> Guide
+        </button>
+        <button id="musicToggleBtn" class="glass-btn">
+            <i data-lucide="music"></i> <span id="musicLabel">Music Off</span>
+            <div class="visualizer" id="visualizerBars" style="display:none;">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Card Transparency Slider -->
+    <div class="brightness-control">
+        <label>✨ Transparency</label>
+        <input type="range" id="brightnessSlider" min="0.2" max="1.2" step="0.01" value="0.7">
+    </div>
+
+    <!-- Page Transition Overlay -->
+    <div class="page-transition" id="pageTransition"></div>
+
+    <!-- Birthday Card -->
+    <div class="birthday-container" id="birthdayCard">
+
+    <!-- Crown placed above typewriter text -->
+    <div class="crown-above">👑</div>
+
+    <div class="wish-above">
+        <div class="typewriter-text" id="wishTextDisplay"></div>
+        <div class="rotating-message" id="rotatingMessage">Today is your day 🎂</div>
+    </div>
+
+        <div class="portrait-zone">
+            <div class="image-frame">
+                <img class="person-photo" id="personImg" src="https://picsum.photos/id/169/560/700" alt="Birthday Star">
+                <div class="photo-hover-card">🌟 Birthday Queen<br>💖 Beautiful Soul<br>✨ Loved Forever</div>
+                <div class="cake-overlay-img" id="cakeOverlay">
+                    🎂
+                    <div class="candle-flame" id="candleFlame"></div>
+                </div>
+                <div class="deco-set">
+                    <div class="deco-item balloon-1">🎈</div>
+                    <div class="deco-item balloon-2">🎀</div>
+                    <div class="deco-item balloon-3">✨</div>
+                    <div class="deco-item balloon-4">🎁</div>
+                    <div class="deco-item balloon-5">🌟</div>
+                    <div class="deco-item balloon-6">💖</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Years -->
+        <div class="year-timeline" id="yearTimeline"></div>
+
+        <div class="year-message-card">
+            <div class="year-message" id="yearMessageText"></div>
+        </div>
+
+        <footer>
+            ✨ Blow the candle | Use transparency slider | Tap year to travel ✨
+            <br>
+            <button id="loveLetterBtn" class="surprise-btn">💌 Open Surprise</button>
+        </footer>
+    </div>
+
+    <!-- Love Letter Modal -->
+    <div class="love-modal" id="loveModal">
+        <div class="love-modal-content">
+            <span class="close-love" id="closeLoveModal">&times;</span>
+            <h2>💖 For You, Bipasha 💖</h2>
+            <p style="margin:1.5rem 0; color:#5a2e3a;">You are the most beautiful chapter of our story. Every year with you is magic. I love you endlessly. ❤️</p>
+            <p style="font-size:1.5rem;">🌹✨💫</p>
+        </div>
+    </div>
+
+    <audio id="bgAudio" loop preload="auto">
+        <source src="audio/soulprodmusic-happy-birthday-220024.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="fireworkSound" preload="auto">
+        <source src="audio/firework-cracker.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>✨ 2023 – Sweet Candles ✨</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --gold: #e0b070;
+            --gold-light: #f5d89a;
+            --rose: #d9748a;
+            --flame: #ffb347;
+            --cream: #fff8eb;
+            --wax-dark: #2c1a12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            height: 100dvh;
+            overflow: hidden;
+            font-family: 'Poppins', 'Georgia', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #0c0503;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* ═══════════════ CINEMATIC SLOW-ZOOM BACKGROUND ═══════════════ */
+        .bg-layer {
+            position: fixed;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            background: url('images/background.png') no-repeat center center/cover;
+            z-index: 0;
+            animation: cinematicZoom 28s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+            will-change: transform;
+        }
+        @keyframes cinematicZoom {
+            0%   { transform: scale(1); }
+            100% { transform: scale(1.18); }
+        }
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: rgba(10, 4, 2, 0.55);
+            pointer-events: none;
+        }
+
+        /* ═══════════════ AMBIENT BACKGROUND GLOW ═══════════════ */
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 85%, rgba(255,170,90,0.14), transparent 45%),
+                radial-gradient(circle at 80% 15%, rgba(255,140,80,0.10), transparent 45%);
+            animation: bgPulse 7s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0%   { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Soft drifting smoke wisps */
+        .smoke-area { position: fixed; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+        .smoke {
+            position: absolute;
+            bottom: -10%;
+            width: clamp(40px, 12vw, 90px);
+            height: clamp(40px, 12vw, 90px);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,150,0.10), transparent 70%);
+            filter: blur(6px);
+            animation: smokeRise linear infinite;
+        }
+        @keyframes smokeRise {
+            0%   { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+            15%  { opacity: 0.5; }
+            100% { transform: translateY(-110vh) translateX(20px) scale(1.4); opacity: 0; }
+        }
+
+        /* Sparkle particles */
+        .particles-area { position: fixed; inset: 0; z-index: 3; overflow: hidden; pointer-events: none; }
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleFloat linear infinite;
+            opacity: 0;
+            text-shadow: 0 0 10px currentColor, 0 0 22px currentColor;
+        }
+        @keyframes sparkleFloat {
+            0%   { bottom: -5%; opacity: 0; transform: translateX(0) rotate(0deg) scale(0.3); }
+            10%  { opacity: 1; }
+            70%  { opacity: 0.7; }
+            100% { bottom: 108%; opacity: 0; transform: translateX(30px) rotate(180deg) scale(1.3); }
+        }
+
+        /* ═══════════════ PAGE LAYOUT ═══════════════ */
+        .stage {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100dvh;
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(0.6rem, 3vw, 1.4rem);
+            padding-bottom: calc(clamp(0.6rem, 3vw, 1.4rem) + 56px + env(safe-area-inset-bottom, 0px));
+            gap: clamp(0.5rem, 1.6vh, 1rem);
+        }
+
+        /* ── Top ribbon badge ── */
+        .wax-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, rgba(45,25,15,0.7), rgba(30,15,8,0.85));
+            border: 1px solid rgba(224,176,112,0.35);
+            padding: clamp(0.3rem, 1vh, 0.45rem) clamp(0.8rem, 2.4vw, 1.2rem);
+            border-radius: 40px;
+            color: #ffe2b8;
+            font-size: clamp(0.6rem, 2vw, 0.78rem);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            animation: badgeBorderGlow 4s ease-in-out infinite;
+        }
+        @keyframes badgeBorderGlow {
+            0%, 100% { border-color: rgba(224,176,112,0.35); }
+            50%      { border-color: rgba(245,210,150,0.7); box-shadow: 0 4px 22px rgba(200,140,60,0.35); }
+        }
+        .wax-badge .flame-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--flame);
+            box-shadow: 0 0 8px var(--flame);
+            animation: flameDotPulse 1.4s ease-in-out infinite;
+        }
+        @keyframes flameDotPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        /* Lucide icon base sizing */
+        .flame i, .music-icon i, .gift-icon i, .home-icon i, .nav-arrow i {
+            display: block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 2.2;
+        }
+        .flame i { width: 1.1em; height: 1.1em; stroke: var(--flame); fill: rgba(255,160,70,0.25); }
+        .nav-arrow i { width: 0.95em; height: 0.95em; }
+
+        /* ── Candle timeline ── */
+        .candle-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: clamp(0.8rem, 4vw, 2.2rem);
+            flex-shrink: 0;
+            height: clamp(56px, 12vh, 90px);
+        }
+        .candle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 16px;
+            transition: transform 0.3s, background 0.3s;
+        }
+        .candle:hover { transform: translateY(-3px); background: rgba(255,180,90,0.08); }
+        .candle:hover .flame i { animation: iconJiggle 0.5s ease; }
+        @keyframes iconJiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            30%      { transform: rotate(-8deg) scale(1.08); }
+            60%      { transform: rotate(8deg) scale(1.08); }
+        }
+        .flame {
+            font-size: clamp(0.9rem, 3vw, 1.3rem);
+            filter: drop-shadow(0 0 6px rgba(255,180,90,0.3));
+            opacity: 0.25;
+            transform: scale(0.85);
+            transition: opacity 0.4s, transform 0.4s, filter 0.4s;
+        }
+        .candle.lit .flame {
+            opacity: 1;
+            transform: scale(1);
+            filter: drop-shadow(0 0 10px rgba(255,180,90,0.9)) drop-shadow(0 0 18px rgba(255,140,60,0.5));
+            animation: flicker 1.6s ease-in-out infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25%      { transform: scale(1.08) rotate(-2deg); }
+            50%      { transform: scale(0.94) rotate(1deg); }
+            75%      { transform: scale(1.05) rotate(2deg); }
+        }
+        .wax-stick {
+            width: clamp(10px, 2.6vw, 16px);
+            height: clamp(28px, 6vh, 44px);
+            background: linear-gradient(180deg, #fff3da, #f0d9ab);
+            border-radius: 3px;
+            border: 1px solid rgba(180,140,80,0.4);
+            opacity: 0.4;
+            transition: opacity 0.4s;
+        }
+        .candle.lit .wax-stick { opacity: 1; }
+        .candle-label {
+            font-size: clamp(0.5rem, 1.6vw, 0.62rem);
+            color: rgba(255,226,184,0.45);
+            letter-spacing: 1px;
+            margin-top: 2px;
+            transition: color 0.4s;
+        }
+        .candle.lit .candle-label { color: rgba(255,226,184,0.9); }
+
+        /* ── Memory scroll panel ── */
+        .memory-panel {
+            position: relative;
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #1a0f08;
+            background-image: linear-gradient(165deg, rgba(35,20,12,0.97), rgba(22,12,7,0.98));
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(224,176,112,0.3);
+            border-radius: 28px;
+            padding: clamp(0.9rem, 3vw, 1.6rem) clamp(1rem, 3.4vw, 1.8rem);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+            overflow: hidden;
+            isolation: isolate;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            will-change: transform;
+            min-height: 260px;  /* safety net */
+        }
+        .memory-panel.enter {
+            animation: panelEnter 0.8s cubic-bezier(0.22,0.8,0.3,1.1) forwards;
+        }
+        @keyframes panelEnter {
+            from { opacity: 0; transform: translateZ(0) translateY(30px) scale(0.97); }
+            to   { opacity: 1; transform: translateZ(0) translateY(0) scale(1); }
+        }
+
+        /* Smooth transition-based flip (no snap) */
+        .memory-panel.flip {
+            transition: border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            border-color: rgba(245, 210, 150, 0.85);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(230,170,100,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .month-tag {
+            font-size: clamp(0.62rem, 2vw, 0.74rem);
+            color: var(--gold-light);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+        .month-tag::before { content: '✦'; opacity: 0.7; }
+
+        .page-content {
+            font-size: clamp(0.8rem, 2.6vw, 1.05rem);
+            line-height: 1.55;
+            color: #ffeedc;
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding-right: 4px;
+            letter-spacing: 0.2px;
+            /* Dynamic height will be set by JS to prevent flicker, min-height as fallback */
+            min-height: 120px;
+        }
+        .page-content::-webkit-scrollbar { width: 4px; }
+        .page-content::-webkit-scrollbar-thumb { background: rgba(224,176,112,0.3); border-radius: 4px; }
+
+        .typewriter-cursor {
+            border-right: 2px solid #d9748a;
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink {
+            0%,100% { border-color: transparent; }
+            50% { border-color: #d9748a; }
+        }
+
+        /* ── Nav buttons ── */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: clamp(0.5rem, 2vw, 1rem);
+            margin-top: clamp(0.6rem, 2vh, 1rem);
+            flex-shrink: 0;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #d4a060, #c08540);
+            border: 1px solid rgba(180,120,60,0.6);
+            padding: clamp(0.45rem, 1.6vh, 0.6rem) clamp(0.7rem, 3vw, 1.3rem);
+            border-radius: 40px;
+            color: #fff5e6;
+            font-weight: bold;
+            font-size: clamp(0.68rem, 2.2vw, 0.88rem);
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+            isolation: isolate;
+              display: inline-flex;          /* ✅ naya line */
+    align-items: center;           /* ✅ vertical center */
+    justify-content: center;       /* ✅ horizontal center */
+    gap: 0.35em;                   /* ✅ arrow aur text ke beech thodi space */
+        }
+        .nav-arrow {
+    display: inline-flex;
+    align-items: center;
+}
+        .nav-btn::after {
+            content: ""; position: absolute; top: -50%; left: -60%;
+            width: 50%; height: 200%; background: rgba(255,255,255,0.18);
+            transform: rotate(25deg); transition: left 0.5s ease;
+            z-index: 1;
+        }
+        .nav-btn:hover::after { left: 120%; }
+        .nav-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.4), 0 0 16px rgba(230,170,100,0.4);
+            border-color: rgba(245,210,150,0.9);
+        }
+        .nav-btn:active { transform: translateY(0) scale(0.95); }
+        .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(40%); }
+        .nav-btn:disabled::after { display: none; }
+        .nav-btn:disabled:hover { transform: none; box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
+
+        .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.45);
+            transform: scale(0);
+            opacity: 1;
+            pointer-events: none;
+            animation: rippleExpand 0.6s ease-out forwards;
+            z-index: 0;
+        }
+        @keyframes rippleExpand {
+            to { transform: scale(2.6); opacity: 0; }
+        }
+
+        .nav-arrow { display: inline-block; transition: transform 0.25s ease; }
+        #prevBtn:not(:disabled):hover .nav-arrow { transform: translateX(-4px); }
+        #nextBtn:not(:disabled):hover .nav-arrow { transform: translateX(4px); }
+
+        /* ═══════════════ FLOATING UI ═══════════════ */
+        .corner-ui {
+            position: fixed;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(145deg, rgba(40,20,10,0.85), rgba(25,12,6,0.78));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(220,170,110,0.45);
+            padding: clamp(0.35rem, 1.4vw, 0.5rem) clamp(0.65rem, 2.4vw, 1rem);
+            border-radius: 40px;
+            font-size: clamp(0.6rem, 2vw, 0.78rem);
+            font-weight: 600;
+            color: #ffe4c0;
+            cursor: pointer;
+            letter-spacing: 0.4px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .corner-ui::before {
+            content: "";
+            position: absolute;
+            top: -50%; left: -60%;
+            width: 40%; height: 200%;
+            background: rgba(255,255,255,0.15);
+            transform: rotate(20deg);
+            transition: left 0.55s ease;
+            z-index: -1;
+        }
+        .corner-ui:hover::before { left: 130%; }
+        .corner-ui:hover {
+            background: linear-gradient(145deg, rgba(60,28,12,0.92), rgba(40,18,8,0.88));
+            border-color: rgba(245,210,150,0.85);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.5), 0 0 18px rgba(230,170,100,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .corner-ui:active { transform: translateY(-1px) scale(0.97); }
+
+        .music-top { top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); }
+
+        .bottom-corner-row {
+            position: fixed;
+            left: calc(10px + env(safe-area-inset-left, 0px));
+            right: calc(10px + env(safe-area-inset-right, 0px));
+            bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .bottom-corner-row > .corner-ui {
+            position: relative;
+            top: auto; left: auto; right: auto; bottom: auto;
+            pointer-events: auto;
+            flex: 0 1 auto;
+            min-width: 0;
+        }
+        @media (max-width: 360px) {
+            .bottom-corner-row > .corner-ui {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.66rem;
+            }
+        }
+        @media (max-width: 320px) {
+            .bottom-corner-row .menu-label { display: none; }
+        }
+
+        .secret-btn {
+            animation: secretPulse 3s ease-in-out infinite;
+        }
+        @keyframes secretPulse {
+            0%,100% { box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08); }
+            50%      { box-shadow: 0 6px 26px rgba(220,130,100,0.5), 0 0 22px rgba(255,150,120,0.35), inset 0 1px 0 rgba(255,255,255,0.08); }
+        }
+        .secret-btn:hover { animation: none; box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 24px rgba(255,140,100,0.5); }
+        .secret-btn .gift-icon { display: inline-block; transition: transform 0.3s; }
+        .secret-btn:hover .gift-icon { animation: giftWobble 0.5s ease; }
+        @keyframes giftWobble {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25%      { transform: rotate(-12deg) scale(1.1); }
+            75%      { transform: rotate(12deg) scale(1.1); }
+        }
+
+        .menu-bottom .home-icon { display: inline-block; transition: transform 0.3s; }
+        .menu-bottom:hover .home-icon { transform: translateY(-2px) scale(1.1); }
+
+        .music-icon { display: inline-block; transition: transform 0.4s ease; }
+        .music-top.playing .music-icon { animation: musicSpin 3s linear infinite; }
+        @keyframes musicSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .eq-bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; opacity: 0; transition: opacity 0.4s; }
+        .music-top.playing .eq-bars { opacity: 1; }
+        .eq-bar { width: 3px; border-radius: 3px; background: #f0c070; animation: eqPulse 0.9s ease-in-out infinite; }
+        .eq-bar:nth-child(1) { height: 7px; animation-delay: 0s; }
+        .eq-bar:nth-child(2) { height: 12px; animation-delay: 0.25s; }
+        .eq-bar:nth-child(3) { height: 5px; animation-delay: 0.5s; }
+        @keyframes eqPulse { 0%,100% { height: 5px; } 50% { height: 14px; } }
+
+        /* ═══════════════ TOAST ═══════════════ */
+        .toast-message {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 350;
+            background: rgba(20,8,4,0.92);
+            backdrop-filter: blur(18px);
+            border: 2px solid rgba(240,180,130,0.8);
+            padding: clamp(0.9rem, 3vh, 1.3rem) clamp(1.2rem, 5vw, 2rem);
+            border-radius: 50px;
+            color: #ffe4c0;
+            font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+            font-weight: bold;
+            text-align: center;
+            pointer-events: none;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 40px rgba(240,160,100,0.4);
+            transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+            max-width: 90vw;
+        }
+        .toast-message.show { transform: translate(-50%, -50%) scale(1); }
+
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        @media (max-height: 620px) {
+            .candle-row { height: 44px; }
+            .wax-badge { padding: 0.25rem 0.7rem; }
+            .memory-panel { min-height: 200px; }
+            .page-content { min-height: 140px; }
+        }
+        @media (max-width: 380px) {
+            .candle-row { gap: 0.6rem; }
+            .memory-panel { min-height: 220px; }
+            .page-content { min-height: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer" aria-hidden="true"></div>
+    <div class="bg-overlay" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+    <div class="smoke-area" id="smokeArea" aria-hidden="true"></div>
+    <div class="particles-area" id="particlesArea" aria-hidden="true"></div>
+
+    <div class="stage">
+        <div class="wax-badge"><span class="flame-dot"></span> 2023 · Sweet Candles</div>
+
+        <div class="candle-row" id="candleRow">
+            <div class="candle lit" data-index="0">
+                <span class="flame"><i data-lucide="flame"></i></span>
+                <span class="wax-stick"></span>
+                <span class="candle-label">Spring</span>
+            </div>
+            <div class="candle" data-index="1">
+                <span class="flame"><i data-lucide="flame"></i></span>
+                <span class="wax-stick"></span>
+                <span class="candle-label">Summer</span>
+            </div>
+            <div class="candle" data-index="2">
+                <span class="flame"><i data-lucide="flame"></i></span>
+                <span class="wax-stick"></span>
+                <span class="candle-label">Winter</span>
+            </div>
+        </div>
+
+        <div class="memory-panel enter" id="memoryPanel">
+            <div class="month-tag" id="monthTag">Spring &amp; Beyond</div>
+            <div class="page-content" id="pageText"></div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn" aria-label="Previous page"><span class="nav-arrow"><i data-lucide="chevron-left"></i></span> Previous</button>
+                <button id="nextBtn" class="nav-btn" aria-label="Next page">Next <span class="nav-arrow"><i data-lucide="chevron-right"></i></span></button>
+            </div>
+        </div>
+    </div>
+
+    <button id="musicToggleBtn" class="corner-ui music-top" aria-label="Toggle music">
+        <span class="music-icon"><i data-lucide="volume-x"></i></span>
+        <span class="music-label">Music Off</span>
+        <span class="eq-bars" id="eqBars">
+            <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+        </span>
+    </button>
+
+    <div class="bottom-corner-row">
+        <button id="secretBtn" class="corner-ui secret-btn" aria-label="Open secret gift"><span class="gift-icon"><i data-lucide="gift"></i></span> <span class="menu-label">Open Secret</span></button>
+        <a href="index.html" class="corner-ui menu-bottom" aria-label="Main menu"><span class="home-icon"><i data-lucide="house"></i></span> <span class="menu-label">Main Menu</span></a>
+    </div>
+
+    <div class="toast-message" id="toastMessage"></div>
+
+    <audio id="bgAudio" loop preload="auto">
+        <source src="audio/soulprodmusic-happy-birthday-220024.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        if (window.lucide) lucide.createIcons();
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false;
+            if ((e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.keyCode == 83) ||
+                (e.ctrlKey && e.shiftKey && e.keyCode == 74)) return false;
+        };
+
+        const storyPages = [
+            "2023 was baked with love and sprinkled with laughter. You blew out candles and made wishes that tasted like honey. Every slice of cake was a memory. Spring brought garden parties and midnight confessions. You learned that happiness is not a destination but a way of traveling. Your smile lit up every room.",
+            "Summer afternoons were for ice cream and silly dances. You collected seashells and secrets, and your heart grew three sizes. Friends became family. Autumn arrived with cozy sweaters and bonfires. You shared stories that made time stand still. The year tasted like cinnamon and kindness.",
+            "Winter wrapped you in warmth. You gave more than you received, and the universe noticed. 2023 left a sweet aftertaste – the kind that lingers. May you always carry this sweetness forward. 🎂🎈 Candles may flicker, but your light never fades."
+        ];
+        const monthTags = ["Spring &amp; Beyond", "Summer into Autumn", "Winter's Warmth"];
+
+        let currentPage = 0;
+        const textDiv = document.getElementById('pageText');
+        const monthTag = document.getElementById('monthTag');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const memoryPanel = document.getElementById('memoryPanel');
+        const candles = document.querySelectorAll('.candle');
+        let typeInterval = null;
+        let isTyping = false;
+
+        /* Lock panel height before clearing text so it doesn't visually shrink/reopen */
+        function lockHeight(element) {
+            if (!element) return;
+            const currentHeight = element.offsetHeight;
+            element.style.height = currentHeight + 'px';
+            element.style.minHeight = '0';
+        }
+        function unlockHeight(element) {
+            if (!element) return;
+            element.style.height = '';
+            element.style.minHeight = '';
+        }
+
+        function typeText(element, text, callback) {
+            if (!element) return;
+            if (typeInterval) clearInterval(typeInterval);
+            element.innerHTML = '';
+            element.classList.add('typewriter-cursor');
+            let index = 0;
+            isTyping = true;
+            typeInterval = setInterval(() => {
+                if (index < text.length) {
+                    element.innerHTML += text.charAt(index);
+                    index++;
+                } else {
+                    clearInterval(typeInterval);
+                    element.classList.remove('typewriter-cursor');
+                    isTyping = false;
+                    if (callback) callback();
+                }
+            }, 20);
+        }
+
+        function updatePage(animate = true) {
+            if (isTyping && typeInterval) clearInterval(typeInterval);
+
+            lockHeight(memoryPanel);
+
+            typeText(textDiv, storyPages[currentPage], () => {
+                unlockHeight(memoryPanel);
+            });
+            monthTag.innerHTML = monthTags[currentPage];
+
+            if (animate) {
+                memoryPanel.classList.add('flip');
+                setTimeout(() => {
+                    memoryPanel.classList.remove('flip');
+                }, 450);
+            } else {
+                memoryPanel.classList.remove('flip');
+            }
+
+            prevBtn.disabled = (currentPage === 0);
+            nextBtn.disabled = (currentPage === storyPages.length - 1);
+            candles.forEach((c, i) => c.classList.toggle('lit', i <= currentPage));
+        }
+
+        function createRipple(e, btn) {
+            const rect = btn.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height) * 1.2;
+            ripple.className = 'btn-ripple';
+            ripple.style.width = size + 'px';
+            ripple.style.height = size + 'px';
+            const x = (e.clientX ?? rect.left + rect.width / 2) - rect.left - size / 2;
+            const y = (e.clientY ?? rect.top + rect.height / 2) - rect.top - size / 2;
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => { if (ripple.parentNode) ripple.remove(); }, 650);
+        }
+
+        prevBtn.addEventListener('click', (e) => {
+            createRipple(e, prevBtn);
+            if (currentPage > 0) { currentPage--; updatePage(true); }
+        });
+        nextBtn.addEventListener('click', (e) => {
+            createRipple(e, nextBtn);
+            if (currentPage < storyPages.length - 1) { currentPage++; updatePage(true); }
+        });
+
+        candles.forEach(candle => {
+            candle.addEventListener('click', () => {
+                const index = parseInt(candle.getAttribute('data-index'));
+                if (index !== currentPage) { currentPage = index; updatePage(true); }
+            });
+        });
+
+        // Swipe support
+        let touchStartX = 0, touchStartY = 0;
+        memoryPanel.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        memoryPanel.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0 && currentPage < storyPages.length - 1) { currentPage++; updatePage(true); }
+                else if (diffX < 0 && currentPage > 0) { currentPage--; updatePage(true); }
+            }
+        }, { passive: true });
+
+        // Initial page load (no animation)
+        updatePage(false);
+
+        /* ── Smoke wisps ── */
+        function createSmoke() {
+            const s = document.createElement('div');
+            s.className = 'smoke';
+            s.style.left = (Math.random() * 92) + '%';
+            s.style.animationDuration = (9 + Math.random() * 8) + 's';
+            s.style.animationDelay = (Math.random() * 3) + 's';
+            document.getElementById('smokeArea').appendChild(s);
+            setTimeout(() => { if (s.parentNode) s.remove(); }, 18000);
+        }
+        for (let i = 0; i < 6; i++) setTimeout(createSmoke, i * 900);
+        setInterval(createSmoke, 2600);
+
+        /* ── Sparkles ── */
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            const icons = ['✨', '💫', '⭐', '🌟', '💖'];
+            sparkle.textContent = icons[Math.floor(Math.random() * icons.length)];
+            sparkle.style.left = Math.random() * 96 + '%';
+            sparkle.style.fontSize = (8 + Math.random() * 16) + 'px';
+            sparkle.style.animationDuration = (6 + Math.random() * 8) + 's';
+            sparkle.style.animationDelay = Math.random() * 3 + 's';
+            sparkle.style.color = ['#ffe9a0', '#ffcc80', '#ffb8c6', '#fff0d0'][Math.floor(Math.random() * 4)];
+            document.getElementById('particlesArea').appendChild(sparkle);
+            const duration = parseFloat(sparkle.style.animationDuration) + parseFloat(sparkle.style.animationDelay);
+            setTimeout(() => { if (sparkle.parentNode) sparkle.remove(); }, duration * 1000 + 500);
+        }
+        setInterval(createSparkle, 900);
+        for (let i = 0; i < 10; i++) setTimeout(createSparkle, i * 300);
+
+        /* ── Music ── */
+        const audio = document.getElementById('bgAudio');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        const musicIcon = musicBtn.querySelector('.music-icon');
+        const musicLabel = musicBtn.querySelector('.music-label');
+        let isMusicPlaying = false;
+
+        audio.volume = 0.18;
+        audio.loop = true;
+        function setMusicUI(playing) {
+            if (playing) {
+                musicIcon.innerHTML = '<i data-lucide="volume-2"></i>'; musicLabel.textContent = 'Playing'; musicBtn.classList.add('playing');
+            } else {
+                musicIcon.innerHTML = '<i data-lucide="volume-x"></i>'; musicLabel.textContent = 'Music Off'; musicBtn.classList.remove('playing');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+        musicBtn.addEventListener('click', (e) => {
+            createRipple(e, musicBtn);
+            if (isMusicPlaying) {
+                audio.pause(); isMusicPlaying = false; setMusicUI(false);
+            } else {
+                audio.play().then(() => { isMusicPlaying = true; setMusicUI(true); }).catch(() => {
+                    setTimeout(() => audio.play().then(() => { isMusicPlaying = true; setMusicUI(true); }).catch(() => {}), 100);
+                });
+            }
+        });
+        audio.addEventListener('ended', () => { isMusicPlaying = false; setMusicUI(false); });
+
+        /* ── Secret button + confetti ── */
+        const secretBtn = document.getElementById('secretBtn');
+        const toastMessage = document.getElementById('toastMessage');
+        let confettiActive = false;
+
+        function triggerConfetti() {
+            if (confettiActive) return;
+            confettiActive = true;
+            const btnRect = secretBtn.getBoundingClientRect();
+            const centerX = btnRect.left + btnRect.width / 2;
+            const centerY = btnRect.top + btnRect.height / 2;
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff8fab', '#fca311', '#a855f7'];
+            const pieces = [];
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                const size = 4 + Math.random() * 9;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const isCircle = Math.random() > 0.45;
+                piece.style.cssText = `position:fixed;left:${centerX}px;top:${centerY}px;width:${size}px;height:${isCircle ? size : size * (0.4 + Math.random() * 1.2)}px;background:${color};border-radius:${isCircle ? '50%' : '3px'};z-index:300;pointer-events:none;box-shadow:0 0 ${size + 4}px ${color};`;
+                document.body.appendChild(piece);
+                pieces.push(piece);
+            }
+            pieces.forEach((piece, i) => {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 180;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance - 50 - Math.random() * 70;
+                const rotation = Math.random() * 900 - 450;
+                const duration = 700 + Math.random() * 800;
+                piece.animate([
+                    { transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 },
+                    { transform: `translate(${dx}px,${dy}px) rotate(${rotation}deg) scale(0.1)`, opacity: 0 }
+                ], { duration, easing: 'cubic-bezier(0,0.65,0.25,1)', fill: 'forwards', delay: i * 4 }).onfinish = () => {
+                    if (piece.parentNode) piece.remove();
+                };
+            });
+            setTimeout(() => { confettiActive = false; pieces.forEach(p => { if (p.parentNode) p.remove(); }); }, 2200);
+        }
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toastMessage.classList.add('show');
+            setTimeout(() => toastMessage.classList.remove('show'), 2200);
+        }
+
+        secretBtn.addEventListener('click', (e) => {
+            createRipple(e, secretBtn);
+            triggerConfetti();
+            const messages = ['You are the sweetest part of 2023 💖', 'Every candle was for you 🕯️✨', 'The universe celebrates YOU 🌟', 'You made 2023 magical 🎂💫'];
+            showToast(messages[Math.floor(Math.random() * messages.length)]);
+        });
+    </script>
+</body>
+</html>

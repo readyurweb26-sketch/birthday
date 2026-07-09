@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>✨ Birthday Gallery ✨</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <style>
+        /* ----- RESET & BODY ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: "Georgia", "Times New Roman", serif;
+            background: linear-gradient(135deg, #0a0015, #1a0033, #0d0020);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ----- PARTICLE BACKGROUND CANVAS ----- */
+        #particlesCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ----- CAROUSEL ----- */
+        .carousel {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .carousel-item {
+            --items: 10;
+            --width: clamp(160px, 32vw, 320px);
+            --height: clamp(210px, 42vw, 420px);
+            --x: calc(var(--active) * 800%);
+            --y: calc(var(--active) * 200%);
+            --rot: calc(var(--active) * 120deg);
+            --opacity: calc(var(--zIndex) / var(--items) * 3 - 2);
+            overflow: hidden;
+            position: absolute;
+            z-index: var(--zIndex);
+            width: var(--width);
+            height: var(--height);
+            margin: calc(var(--height) * -0.5) 0 0 calc(var(--width) * -0.5);
+            border-radius: 16px;
+            top: 50%;
+            left: 50%;
+            user-select: none;
+            transform-origin: 0% 100%;
+            box-shadow: 0 15px 60px 15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.1);
+            background: black;
+            pointer-events: all;
+            transform: translate(var(--x), var(--y)) rotate(var(--rot));
+            transition: transform 0.8s cubic-bezier(0, 0.02, 0, 1), box-shadow 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            box-shadow: 0 20px 70px 20px rgba(255, 215, 0, 0.15), 0 0 0 2px rgba(255, 215, 0, 0.3);
+        }
+
+        .carousel-item .carousel-box {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            opacity: var(--opacity);
+            font-family: "Georgia", "Times New Roman", serif;
+        }
+
+        .carousel-item .carousel-box::before {
+            content: "";
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.6));
+            pointer-events: none;
+        }
+
+        .carousel-item .title {
+            position: absolute;
+            z-index: 2;
+            color: #fff;
+            bottom: 18px;
+            left: 18px;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            font-size: clamp(16px, 2.5vw, 26px);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .carousel-item .num {
+            position: absolute;
+            z-index: 2;
+            color: rgba(255, 255, 255, 0.9);
+            top: 10px;
+            left: 18px;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            font-size: clamp(18px, 8vw, 70px);
+            font-weight: 900;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+            opacity: 0.7;
+            font-family: "Georgia", serif;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* Glow on active item */
+        .carousel-item.active-glow {
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.25), 0 15px 60px 15px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 215, 0, 0.15);
+        }
+
+        /* ----- SOCIAL ICONS (no Bips link) ----- */
+        .social {
+            position: fixed;
+            z-index: 10;
+            bottom: 22px;
+            right: 80px;
+            color: #fff;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+        .social:hover {
+            opacity: 0.7;
+        }
+        .social a {
+            display: inline-block;
+            margin-left: 4px;
+        }
+        .social svg {
+            --fill: #fff;
+            width: 32px;
+            height: 32px;
+        }
+
+        /* ----- CURSOR ----- */
+        .cursor {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            --size: 40px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin: calc(var(--size) * -0.5) 0 0 calc(var(--size) * -0.5);
+            transition: transform 0.85s cubic-bezier(0, 0.02, 0, 1);
+            display: none;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
+        }
+        @media (pointer: fine) {
+            .cursor {
+                display: block;
+            }
+        }
+        .cursor2 {
+            --size: 3px;
+            transition-duration: 0.6s;
+            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(255, 215, 0, 0.3);
+            border-width: 1px;
+        }
+
+        /* ----- BACK TO 2025 BUTTON ----- */
+        .back-2025-btn {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 50;
+            background: rgba(255, 200, 210, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 200, 210, 0.2);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .back-2025-btn:hover {
+            background: rgba(255, 200, 210, 0.3);
+            transform: scale(1.04);
+            color: #fff;
+            border-color: rgba(255, 200, 210, 0.4);
+            box-shadow: 0 6px 30px rgba(255, 200, 210, 0.15);
+        }
+
+        /* ----- MUSIC SYNC INDICATOR (subtle) ----- */
+        .music-sync-indicator {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 50;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            font-family: 'Segoe UI', sans-serif;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            opacity: 0.6;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 600px) {
+            .carousel-item {
+                --width: clamp(120px, 45vw, 200px);
+                --height: clamp(160px, 55vw, 260px);
+            }
+            .carousel-item .title {
+                font-size: clamp(12px, 3vw, 16px);
+                bottom: 12px;
+                left: 12px;
+            }
+            .carousel-item .num {
+                font-size: clamp(14px, 10vw, 40px);
+                top: 6px;
+                left: 12px;
+            }
+            .back-2025-btn {
+                bottom: 14px;
+                right: 14px;
+                padding: 0.4rem 0.9rem;
+                font-size: 0.7rem;
+            }
+            .social {
+                bottom: 16px;
+                right: 70px;
+            }
+            .social svg {
+                width: 24px;
+                height: 24px;
+            }
+            .music-sync-indicator {
+                top: 10px;
+                right: 10px;
+                font-size: 0.55rem;
+                padding: 0.15rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .carousel-item {
+                --width: clamp(100px, 50vw, 160px);
+                --height: clamp(140px, 60vw, 220px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PARTICLE BACKGROUND ===== -->
+    <canvas id="particlesCanvas"></canvas>
+
+    <!-- ===== CAROUSEL ===== -->
+    <div class="carousel" id="carousel">
+        <!-- 10 items (same as your original) -->
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Happy Birthday Pasha 🎂🥳</div>
+                <div class="num">01</div>
+                <img src="images/1.jpg" alt="Birthday" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">I want to tell you Something 😍</div>
+                <div class="num">02</div>
+                <img src="images/2.jpg" alt="Surprise" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Please Keep Dragging 😊</div>
+                <div class="num">03</div>
+                <img src="images/3.jpg" alt="Drag" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">You are Amazing 🤩</div>
+                <div class="num">04</div>
+                <img src="images/4.jpg" alt="Amazing" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Most Beautiful Person on Earth 💯</div>
+                <div class="num">05</div>
+                <img src="images/5.jpg" alt="Beautiful" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">And Cutest 🎀</div>
+                <div class="num">06</div>
+                <img src="images/6.jpg" alt="Cutest" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">And Since i met You 😗</div>
+                <div class="num">07</div>
+                <img src="images/7.jpg" alt="Met" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">I feel very Lucky Everyday 😇</div>
+                <div class="num">08</div>
+                <img src="images/8.jpg" alt="Lucky" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">and I have Crush on You 🥰</div>
+                <div class="num">09</div>
+                <img src="images/9.jpg" alt="Crush" />
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">I Miss You ❤️</div>
+                <div class="num">10</div>
+                <img src="images/10.jpg" alt="Miss" />
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SOCIAL ICONS (NO Bips link) ===== -->
+    <div class="social">
+        <a href="#" target="_blank">
+            <svg><use xlink:href="#ico-instagram"></use></svg>
+        </a>
+        <a href="https://drive.google.com/file/d/17vqG_V7iLbLi6v8v23pPQYSXzQ4Aax4n/view?usp=sharing" target="_blank">
+            <svg><use xlink:href="#ico-video"></use></svg>
+        </a>
+    </div>
+
+    <!-- SVG icons -->
+    <svg style="display: none">
+        <symbol id="ico-instagram" viewBox="0 0 35 35">
+            <circle opacity=".2" cx="17.5" cy="17.5" r="17" stroke="var(--fill)" fill="none"></circle>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M24.944 20.476c.028-.457.042-1.282.042-2.476s-.014-2.019-.042-2.476c-.056-1.09-.378-1.93-.965-2.517s-1.422-.91-2.503-.965C21.018 12.014 20.194 12 19 12s-2.019.014-2.476.042c-1.081.047-1.92.368-2.517.965s-.918 1.436-.965 2.518C13.014 15.98 13 16.805 13 18c0 1.194.014 2.019.042 2.476.047 1.09.368 1.93.965 2.517s1.436.91 2.518.965c.466.028 1.29.042 2.475.042 1.184 0 2.01-.014 2.476-.042 1.072-.047 1.906-.368 2.503-.965.597-.597.918-1.436.965-2.517ZM19 13.075h-1.427c-.186 0-.438.01-.755.029a11.61 11.61 0 0 0-.797.07c-.215.028-.401.08-.56.154-.26.102-.489.251-.685.447-.196.196-.35.425-.461.685-.056.15-.103.336-.14.56a7.843 7.843 0 0 0-.084.811 7.113 7.113 0 0 0-.014.741c.01.178.01.453 0 .826-.01.373-.01.573 0 .601.01.028.01.228 0 .601s-.01.648 0 .826c.01.177.014.424.014.74 0 .318.028.588.084.812l.14.56c.112.26.265.489.461.685.196.196.425.345.685.447.15.056.336.108.56.154.224.047.49.07.797.07.308 0 .56.01.755.028.196.019.471.019.826 0 .354-.019.554-.019.601 0 .047.019.242.019.587 0s.62-.019.826 0c.205.019.456.01.755-.028.298-.037.569-.06.811-.07.242-.01.424-.06.546-.154.26-.102.494-.251.699-.447a1.75 1.75 0 0 0 .447-.686c.056-.149.103-.335.14-.559.038-.224.066-.494.084-.811.019-.317.023-.564.014-.741a11.82 11.82 0 0 1 0-.826c.01-.373.01-.573 0-.601-.01-.028-.01-.228 0-.601s.01-.648 0-.826c-.01-.177-.014-.424-.014-.74 0-.318-.028-.588-.084-.812l-.14-.56a1.956 1.956 0 0 0-1.147-1.133 3.979 3.979 0 0 0-.545-.153 3.915 3.915 0 0 0-.811-.07c-.326 0-.578-.01-.755-.028a5.916 5.916 0 0 0-.826 0c-.372.019-.568.019-.587 0Zm3.706 2.225c.14-.14.21-.308.21-.504a.57.57 0 0 0-.21-.503.767.767 0 0 0-.517-.21.718.718 0 0 0-.504.21.622.622 0 0 0-.21.503c.01.196.08.364.21.504s.299.21.504.21c.205 0 .377-.07.517-.21ZM22.063 18c0 .849-.298 1.576-.895 2.182a2.882 2.882 0 0 1-2.168.895 3.075 3.075 0 0 1-2.182-.895c-.606-.588-.904-1.315-.895-2.182.01-.867.308-1.594.895-2.182.588-.587 1.315-.886 2.182-.895.867-.01 1.59.29 2.168.895.578.606.876 1.333.895 2.182Zm-1.077 0a1.95 1.95 0 0 0-.573-1.413A1.897 1.897 0 0 0 19 16c-.56 0-1.03.196-1.413.587A2.001 2.001 0 0 0 17 18c-.01.55.186 1.021.587 1.413.401.391.872.587 1.413.587.54 0 1.012-.196 1.413-.587.4-.392.592-.863.573-1.413Z" transform="translate(-1.5 -0.5)" fill="var(--fill)"></path>
+        </symbol>
+        <symbol id="ico-video" viewBox="0 0 35 35">
+            <circle opacity=".2" cx="17.5" cy="17.5" r="17" stroke="var(--fill)" fill="none"></circle>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.3025 14.0835C15.3025 14.3845 15.1934 14.6403 14.9752 14.851C14.757 15.0617 14.4786 15.167 14.14 15.167C13.8014 15.167 13.5267 15.0617 13.316 14.851C13.1053 14.6403 13 14.3807 13 14.0722C13 13.7637 13.1053 13.5079 13.316 13.3047C13.5267 13.1016 13.8051 13 14.1512 13C14.4974 13 14.772 13.1016 14.9752 13.3047C15.1783 13.5079 15.2874 13.7675 15.3025 14.0835ZM13.0677 23V16.0248H15.2348V23H13.0677ZM16.4763 16.0248C16.5064 16.8676 16.5214 17.6125 16.5214 18.2596V23H18.7111V18.9819C18.7111 18.7111 18.7336 18.5305 18.7788 18.4402C18.9895 17.8984 19.3582 17.6275 19.8849 17.6275C20.6223 17.6275 20.991 18.1317 20.991 19.14V23H23.158V18.8691C23.158 17.8758 22.9285 17.1272 22.4695 16.623C22.0105 16.1189 21.4048 15.8668 20.6524 15.8668C19.6742 15.8668 18.9594 16.243 18.5079 16.9955H18.4628L18.3499 16.0248H16.4763Z" transform="translate(0 -1)" fill="var(--fill)"></path>
+        </symbol>
+    </svg>
+
+    <!-- ===== CURSOR ===== -->
+    <div class="cursor"></div>
+    <div class="cursor cursor2"></div>
+
+    <!-- ===== BACK TO 2025 BUTTON ===== -->
+    <a href="year2025.html" class="back-2025-btn">⬅ Back to 2025</a>
+
+    <!-- ===== MUSIC SYNC INDICATOR (no button) ===== -->
+    <div class="music-sync-indicator" id="musicIndicator">♫ sync</div>
+
+    <!-- ===== AUDIO (same as 2025's video audio) ===== -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="Videos/Chitta.mp4" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ═══ DISABLE RIGHT-CLICK & DEVTOOLS KEYS ═══
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.onkeydown = function(e) {
+    if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+        return false;
+    }
+};
+        // ================================================================
+        // 1. CAROUSEL LOGIC (original)
+        // ================================================================
+        let progress = 50;
+        let startX = 0;
+        let active = 0;
+        let isDown = false;
+
+        const speedWheel = 0.02;
+        const speedDrag = -0.1;
+
+        const getZindex = (array, index) => (array.map((_, i) => (index === i) ? array.length : array.length - Math.abs(index - i)));
+
+        const $items = document.querySelectorAll('.carousel-item');
+        const $cursors = document.querySelectorAll('.cursor');
+
+        const displayItems = (item, index, active) => {
+            const zIndex = getZindex([...$items], active)[index];
+            item.style.setProperty('--zIndex', zIndex);
+            item.style.setProperty('--active', (index - active) / $items.length);
+            item.classList.toggle('active-glow', index === active);
+        };
+
+        const animate = () => {
+            progress = Math.max(0, Math.min(progress, 100));
+            active = Math.floor(progress / 100 * ($items.length - 1));
+            $items.forEach((item, index) => displayItems(item, index, active));
+        };
+        animate();
+
+        $items.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                progress = (i / $items.length) * 100 + 10;
+                animate();
+            });
+        });
+
+        const handleWheel = e => {
+            const wheelProgress = e.deltaY * speedWheel;
+            progress = progress + wheelProgress;
+            animate();
+        };
+
+        const handleMouseMove = (e) => {
+            if (e.type === 'mousemove') {
+                $cursors.forEach(($cursor) => {
+                    $cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                });
+            }
+            if (!isDown) return;
+            const x = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+            const mouseProgress = (x - startX) * speedDrag;
+            progress = progress + mouseProgress;
+            startX = x;
+            animate();
+        };
+
+        const handleMouseDown = e => {
+            isDown = true;
+            startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        };
+
+        const handleMouseUp = () => {
+            isDown = false;
+        };
+
+        document.addEventListener('mousewheel', handleWheel);
+        document.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('touchstart', handleMouseDown);
+        document.addEventListener('touchmove', handleMouseMove);
+        document.addEventListener('touchend', handleMouseUp);
+
+        // ================================================================
+        // 2. PARTICLE BACKGROUND (beautiful glow)
+        // ================================================================
+        const pCanvas = document.getElementById('particlesCanvas');
+        const pCtx = pCanvas.getContext('2d');
+        let pw, ph;
+        let particles = [];
+
+        function resizeParticles() {
+            pw = window.innerWidth;
+            ph = window.innerHeight;
+            pCanvas.width = pw;
+            pCanvas.height = ph;
+        }
+        resizeParticles();
+        window.addEventListener('resize', resizeParticles);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * pw;
+                this.y = Math.random() * ph;
+                this.size = 1.5 + Math.random() * 3;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = 0.3 + Math.random() * 0.4;
+                this.color = `hsla(${Math.random() * 60 + 320}, 80%, 70%, ${this.opacity})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > pw) this.speedX *= -1;
+                if (this.y < 0 || this.y > ph) this.speedY *= -1;
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                pCtx.fillStyle = this.color;
+                pCtx.fill();
+                // glow
+                pCtx.shadowColor = 'rgba(255,215,0,0.2)';
+                pCtx.shadowBlur = 12;
+                pCtx.fill();
+                pCtx.shadowBlur = 0;
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pw, ph);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            // connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        pCtx.beginPath();
+                        pCtx.moveTo(particles[i].x, particles[i].y);
+                        pCtx.lineTo(particles[j].x, particles[j].y);
+                        pCtx.strokeStyle = `rgba(255,215,0,${0.08 * (1 - dist / 120)})`;
+                        pCtx.lineWidth = 0.6;
+                        pCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ================================================================
+        // 3. MUSIC SYNC with year2025.html (localStorage)
+        //    Only plays when 2025.html music is ON.
+        //    No independent toggle; indicator reflects state.
+        // ================================================================
+        const audio = document.getElementById('bgAudio');
+        const indicator = document.getElementById('musicIndicator');
+        let isMusicPlaying = false;
+
+        function syncMusicState() {
+            const savedState = localStorage.getItem('musicPlaying');
+            if (savedState === 'true') {
+                audio.play().catch(e => console.log('Audio play error:', e));
+                isMusicPlaying = true;
+                indicator.textContent = '♫ on';
+                indicator.style.color = 'rgba(255,215,0,0.7)';
+            } else {
+                audio.pause();
+                isMusicPlaying = false;
+                indicator.textContent = '♫ off';
+                indicator.style.color = 'rgba(255,255,255,0.25)';
+                if (!savedState) {
+                    // First time: set default off
+                    localStorage.setItem('musicPlaying', 'false');
+                }
+            }
+        }
+
+        // Listen for changes from other tabs (storage event)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'musicPlaying') {
+                syncMusicState();
+            }
+        });
+
+        // Also when page becomes visible again (tab switch)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                syncMusicState();
+            }
+        });
+
+        // On page load
+        window.addEventListener('load', () => {
+            syncMusicState();
+            // Also set initial state if it's the first time
+            if (localStorage.getItem('musicPlaying') === null) {
+                localStorage.setItem('musicPlaying', 'false');
+                syncMusicState();
+            }
+        });
+
+        console.log('🎂 image.html – music synced with 2025.html via localStorage.');
+    </script>
+</body>
+</html>

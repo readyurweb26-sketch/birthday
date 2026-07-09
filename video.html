@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>✨ Special Video ✨</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100dvh;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            background: #0a0015;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* ================================================================
+           BACKGROUND DECORATION – animated gradient + floating elements
+           ================================================================ */
+        #bgDecor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: linear-gradient(135deg, #0a0015, #1a0033, #2d0022, #1a0033);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ---- Floating Hearts & Sparkles ---- */
+        .float-element {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.2rem;
+            animation: floatUp linear infinite;
+            opacity: 0.5;
+            z-index: 2;
+            user-select: none;
+        }
+
+        .float-element.heart {
+            animation-duration: 8s + random;
+        }
+
+        .float-element.sparkle {
+            font-size: 0.8rem;
+            animation-duration: 6s;
+            opacity: 0.3;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% {
+                transform: translateY(-10vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Glow ring around video area */
+        .glow-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            height: 90vh;
+            max-width: 95vmin;
+            max-height: 95vmin;
+            border-radius: 20px;
+            z-index: 2;
+            pointer-events: none;
+            border: 1px solid rgba(255, 215, 0, 0.05);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.03), inset 0 0 60px rgba(255, 215, 0, 0.02);
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                border-color: rgba(255, 215, 0, 0.05);
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.02), inset 0 0 40px rgba(255, 215, 0, 0.01);
+            }
+            50% {
+                border-color: rgba(255, 215, 0, 0.15);
+                box-shadow: 0 0 80px rgba(255, 215, 0, 0.06), inset 0 0 80px rgba(255, 215, 0, 0.03);
+            }
+        }
+
+        /* ================================================================
+           ENTRY OVERLAY
+           ================================================================ */
+        #entryOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        #entryOverlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .entry-title {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ff8c00, 0 0 80px #ff4500;
+            text-align: center;
+            padding: 0 1rem;
+            letter-spacing: 2px;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .entry-sub {
+            font-size: clamp(1rem, 3vw, 1.8rem);
+            color: #ffefcf;
+            margin-top: 1.2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease 0.6s forwards;
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================================================================
+           CONFETTI CANVAS (entry)
+           ================================================================ */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 201;
+        }
+
+        /* ================================================================
+           VIDEO WRAPPER
+           ================================================================ */
+        .video-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .video-wrapper.visible {
+            opacity: 1;
+        }
+
+        #bgVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent;
+            cursor: pointer;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* ================================================================
+           TAP OVERLAY (play/pause indicator)
+           ================================================================ */
+        .tap-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tap-overlay.show {
+            opacity: 1;
+        }
+
+        .tap-icon {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            padding: 1.2rem 1.8rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: pulseIcon 0.6s ease;
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(0.7); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* ================================================================
+           LOVE SCREEN (video end)
+           ================================================================ */
+        .love-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            background: linear-gradient(135deg, #1a0011, #2d0022, #1a0011);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            animation: fadeLove 1s ease forwards;
+        }
+
+        .love-screen.show {
+            display: flex;
+        }
+
+        @keyframes fadeLove {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .love-emoji {
+            font-size: clamp(6rem, 25vw, 12rem);
+            animation: floatHeart 2.5s ease-in-out infinite;
+        }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .love-text {
+            font-size: clamp(1.6rem, 5vw, 3.2rem);
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            margin-top: 1.5rem;
+            text-align: center;
+            letter-spacing: 2px;
+            font-family: 'Georgia', 'Dancing Script', cursive;
+            animation: fadeInText 1.5s ease 0.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInText {
+            to { opacity: 1; }
+        }
+
+        .love-sub {
+            font-size: clamp(0.9rem, 2vw, 1.3rem);
+            color: rgba(255, 200, 210, 0.6);
+            margin-top: 0.8rem;
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        /* ================================================================
+           BACK TO 2025 BUTTON
+           ================================================================ */
+        .back-2025-btn {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 50;
+            background: rgba(255, 200, 210, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 200, 210, 0.15);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s;
+        }
+
+        .back-2025-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-2025-btn:hover {
+            background: rgba(255, 200, 210, 0.25);
+            transform: scale(1.04);
+            color: #fff;
+            border-color: rgba(255, 200, 210, 0.3);
+        }
+
+        /* ================================================================
+           RESPONSIVE
+           ================================================================ */
+        @media (max-width: 600px) {
+            .entry-title {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            .entry-sub {
+                font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+            }
+            .tap-icon {
+                font-size: 2.8rem;
+                padding: 0.8rem 1.2rem;
+            }
+            .back-2025-btn {
+                bottom: 14px;
+                right: 14px;
+                padding: 0.4rem 0.9rem;
+                font-size: 0.7rem;
+            }
+            .float-element {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .entry-title {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+            }
+            .entry-sub {
+                font-size: clamp(0.6rem, 2vw, 1rem);
+                margin-top: 0.5rem;
+            }
+            .love-text {
+                font-size: clamp(1rem, 3vw, 1.8rem);
+            }
+            .love-emoji {
+                font-size: clamp(4rem, 15vw, 7rem);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+    BACKGROUND DECORATION – animated gradient + floating elements
+    ================================================================ -->
+    <div id="bgDecor"></div>
+
+    <!-- Glow ring around video area -->
+    <div class="glow-ring"></div>
+
+    <!-- ================================================================
+    ENTRY OVERLAY
+    ================================================================ -->
+    <div id="entryOverlay">
+        <div class="entry-title">✨ Something Special ✨</div>
+        <div class="entry-sub">❤️ For You ❤️</div>
+    </div>
+
+    <!-- ================================================================
+    CONFETTI CANVAS
+    ================================================================ -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- ================================================================
+    VIDEO WRAPPER
+    ================================================================ -->
+    <div class="video-wrapper" id="videoWrapper">
+        <video id="bgVideo" playsinline preload="auto">
+            <!-- 👇 CHANGE THIS VIDEO URL -->
+            <source src="Videos/My Video.mp4" type="video/mp4">
+            <!-- ya direct link: <source src="https://example.com/video.mp4" type="video/mp4"> -->
+        </video>
+        <div class="tap-overlay" id="tapOverlay">
+            <div class="tap-icon" id="tapIcon">▶</div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+    LOVE SCREEN (video end)
+    ================================================================ -->
+    <div class="love-screen" id="loveScreen">
+        <div class="love-emoji">❤️</div>
+        <div class="love-text">love u soo much my pusku pusku puu</div>
+        <div class="love-sub">💖 forever 💖</div>
+    </div>
+
+    <!-- ================================================================
+    BACK TO 2025
+    ================================================================ -->
+    <a href="year2025.html" class="back-2025-btn" id="backBtn">⬅ Back to 2025</a>
+
+    <script>
+        // ================================================================
+        // 1. FLOATING HEARTS & SPARKLES (background decoration)
+        // ================================================================
+        const bgDecor = document.getElementById('bgDecor');
+        const elements = ['❤️', '💖', '💕', '✨', '⭐', '💫', '🌸', '🌺', '🎵', '💗'];
+        const colors = ['#ff6b6b', '#ffd93d', '#ff8a5c', '#a29bfe', '#fd79a8', '#fdcb6e'];
+
+        function createFloatElement() {
+            const el = document.createElement('div');
+            el.className = 'float-element';
+            const isHeart = Math.random() > 0.4;
+            el.textContent = isHeart ? elements[Math.floor(Math.random() * 4)] : elements[Math.floor(Math.random() * 10)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.fontSize = (0.7 + Math.random() * 1.5) + 'rem';
+            el.style.animationDuration = (6 + Math.random() * 10) + 's';
+            el.style.animationDelay = (Math.random() * 8) + 's';
+            el.style.opacity = 0.2 + Math.random() * 0.4;
+            if (isHeart) {
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+            } else {
+                el.style.color = '#ffd700';
+            }
+            bgDecor.appendChild(el);
+            // Auto remove after animation ends to avoid memory buildup
+            setTimeout(() => {
+                if (el.parentNode) el.remove();
+            }, 18000);
+        }
+
+        // Create initial batch of floating elements
+        for (let i = 0; i < 45; i++) {
+            setTimeout(() => createFloatElement(), i * 200);
+        }
+
+        // Continuously add new ones
+        setInterval(() => {
+            createFloatElement();
+        }, 3000);
+
+        // ================================================================
+        // 2. CONFETTI / CRACKER ANIMATION
+        // ================================================================
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+
+        function resizeCanvas() {
+            W = window.innerWidth;
+            H = window.innerHeight;
+            canvas.width = W;
+            canvas.height = H;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let particles = [];
+
+        function createParticles(count = 150) {
+            const colors = ['#ff0', '#f0f', '#0ff', '#f44', '#4f4', '#44f', '#ff8800', '#ff44aa', '#aaff44', '#ffaa00', '#ff6b6b', '#ffd93d'];
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 14;
+                particles.push({
+                    x: W / 2 + (Math.random() - 0.5) * 120,
+                    y: H / 2 + (Math.random() - 0.5) * 80 - 40,
+                    vx: Math.cos(angle) * speed * (0.5 + Math.random() * 0.6),
+                    vy: Math.sin(angle) * speed * (0.5 + Math.random() * 0.6) - 3,
+                    size: 4 + Math.random() * 12,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 1,
+                    decay: 0.004 + Math.random() * 0.015,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 0.25,
+                    shape: Math.random() > 0.4 ? 'rect' : 'circle'
+                });
+            }
+        }
+
+        function createSideBurst() {
+            const colors = ['#ff0', '#f44', '#4f4', '#44f', '#ff8800', '#ff44aa', '#aaff44', '#ff6b6b'];
+            for (let i = 0; i < 50; i++) {
+                const side = Math.floor(Math.random() * 4);
+                let x, y;
+                if (side === 0) { x = Math.random() * W; y = -20; }
+                else if (side === 1) { x = Math.random() * W; y = H + 20; }
+                else if (side === 2) { x = -20; y = Math.random() * H; }
+                else { x = W + 20; y = Math.random() * H; }
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 9;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 1.5,
+                    size: 3 + Math.random() * 9,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 1,
+                    decay: 0.006 + Math.random() * 0.018,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 0.2,
+                    shape: 'rect'
+                });
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, W, H);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.08;
+                p.vx *= 0.99;
+                p.vy *= 0.99;
+                p.life -= p.decay;
+                p.rotation += p.rotSpeed;
+                if (p.life <= 0 || p.y > H + 50 || p.x < -50 || p.x > W + 50) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                if (p.shape === 'rect') {
+                    ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+
+        createParticles(160);
+        setTimeout(() => createSideBurst(), 300);
+        setTimeout(() => createSideBurst(), 700);
+        setTimeout(() => createParticles(100), 1200);
+        setTimeout(() => createSideBurst(), 1600);
+        animateConfetti();
+
+        // ================================================================
+        // 3. ENTRY OVERLAY TIMING
+        // ================================================================
+        const entryOverlay = document.getElementById('entryOverlay');
+        const videoWrapper = document.getElementById('videoWrapper');
+        const video = document.getElementById('bgVideo');
+        const backBtn = document.getElementById('backBtn');
+
+        setTimeout(() => {
+            entryOverlay.classList.add('hidden');
+            videoWrapper.classList.add('visible');
+            backBtn.classList.add('visible');
+            video.play().catch(e => console.log('Video autoplay blocked:', e));
+        }, 3500);
+
+        // ================================================================
+        // 4. VIDEO PLAY/PAUSE ON TAP
+        // ================================================================
+        const tapOverlay = document.getElementById('tapOverlay');
+        const tapIcon = document.getElementById('tapIcon');
+        let tapTimeout = null;
+
+        function showTapIcon(icon) {
+            tapIcon.textContent = icon;
+            tapOverlay.classList.add('show');
+            clearTimeout(tapTimeout);
+            tapTimeout = setTimeout(() => {
+                tapOverlay.classList.remove('show');
+            }, 600);
+        }
+
+        video.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) {
+                video.play().catch(e => console.log('Play error:', e));
+                showTapIcon('▶');
+            } else {
+                video.pause();
+                showTapIcon('⏸');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.back-2025-btn')) return;
+            if (e.target.closest('.love-screen')) return;
+            if (videoWrapper.classList.contains('visible')) {
+                if (video.paused) {
+                    video.play().catch(e => console.log('Play error:', e));
+                    showTapIcon('▶');
+                } else {
+                    video.pause();
+                    showTapIcon('⏸');
+                }
+            }
+        });
+
+        // ================================================================
+        // 5. VIDEO END -> LOVE SCREEN
+        // ================================================================
+        const loveScreen = document.getElementById('loveScreen');
+
+        video.addEventListener('ended', () => {
+            loveScreen.classList.add('show');
+            videoWrapper.style.opacity = '0.2';
+        });
+
+        // ================================================================
+        // 6. KEYBOARD SUPPORT
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+                if (videoWrapper.classList.contains('visible')) {
+                    if (video.paused) {
+                        video.play().catch(e => console.log('Play error:', e));
+                        showTapIcon('▶');
+                    } else {
+                        video.pause();
+                        showTapIcon('⏸');
+                    }
+                }
+            }
+        });
+
+        console.log('🎬 video.html loaded – with background decorations!');
+    </script>
+</body>
+</html>

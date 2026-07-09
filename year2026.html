@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>✨ 2026 – Love Cards ✨</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100dvh; overflow: hidden;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #04000f;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            cursor: none;
+        }
+
+        /* ── BG VIDEO ── */
+        #bgVideo { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.55; }
+        .video-overlay { position: fixed; inset: 0; z-index: 1; background: radial-gradient(ellipse at center, rgba(4,0,15,.45), rgba(4,0,15,.85)); pointer-events: none; }
+
+        /* ── FLOATING EMOJIS ── */
+        #bgDecor { position: fixed; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+        .bg-float { position: absolute; pointer-events: none; animation: bgFloat linear infinite; user-select: none; }
+        @keyframes bgFloat {
+            0% { transform: translateY(110vh) rotate(0deg) scale(.5); opacity: 0; }
+            10% { opacity: .28; } 90% { opacity: .28; }
+            100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        /* ═══════════════ CUSTOM CURSOR ═══════════════ */
+        #customCursor {
+            position: fixed; pointer-events: none; z-index: 10000;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd700 10%, rgba(255,215,0,0.2) 80%);
+            box-shadow: 0 0 20px 5px rgba(255,215,0,0.4), 0 0 40px 10px rgba(255,140,0,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.15s, height 0.15s, box-shadow 0.15s;
+            animation: cursorPulse 1.5s infinite alternate;
+        }
+        @keyframes cursorPulse {
+            from { box-shadow: 0 0 20px 5px rgba(255,215,0,0.4); }
+            to { box-shadow: 0 0 30px 8px rgba(255,215,0,0.55); }
+        }
+
+        /* ═══════════════ ENTRY OVERLAY ═══════════════ */
+        #entryOverlay {
+            position: fixed; inset: 0; z-index: 300;
+            background: transparent;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.9s ease; pointer-events: none; overflow: hidden;
+            cursor: none;
+        }
+        #entryOverlay.hidden { opacity: 0; pointer-events: none; }
+        .entry-container {
+            text-align: center; animation: entryPop 0.9s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+            opacity: 0; transform: scale(0.6); position: relative; z-index: 5;
+        }
+        @keyframes entryPop { to { opacity: 1; transform: scale(1); } }
+        .entry-cake { font-size: clamp(4rem,14vw,8rem); display: block; animation: cakeBounce 1.2s ease-in-out infinite alternate; }
+        @keyframes cakeBounce { 0% { transform: translateY(0) rotate(-3deg); } 100% { transform: translateY(-14px) rotate(3deg); } }
+        .entry-title {
+            font-size: clamp(1.8rem,6vw,3.6rem); font-weight: 900; color: #ffd700;
+            text-shadow: 0 0 20px #ffd700, 0 0 50px #ff8c00, 0 0 90px #ff4500;
+            letter-spacing: 3px; margin-top: 0.4rem;
+        }
+        .entry-sub { font-size: clamp(0.9rem,2.4vw,1.5rem); color: #ffefcf; letter-spacing: 5px; margin-top: 0.4rem; opacity: 0.85; }
+
+        .corner-deco {
+            position: absolute; font-size: clamp(2rem,5vw,3.5rem);
+            animation: cornerFloat 2s ease-in-out infinite alternate; pointer-events:none;
+        }
+        @keyframes cornerFloat { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-14px) rotate(5deg); } }
+        .ribbon {
+            position: absolute; width:6px; border-radius:3px;
+            animation: ribbonFall linear infinite; pointer-events:none;
+        }
+        @keyframes ribbonFall { 0% { transform: translateY(-60px) rotate(0deg); opacity:1; } 100% { transform: translateY(110vh) rotate(720deg); opacity:0.2; } }
+        .string-line {
+            position: absolute; top:0; width:2px;
+            background: linear-gradient(to bottom, rgba(255,215,0,0.6), rgba(255,215,0,0));
+            pointer-events:none; animation: stringGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes stringGlow { 0%{opacity:0.5} 100%{opacity:1} }
+        .star-light {
+            position: absolute; font-size: clamp(1.2rem,3vw,2rem);
+            animation: starTwinkle 1.5s ease-in-out infinite alternate; pointer-events:none;
+            filter: drop-shadow(0 0 8px #ffd700);
+        }
+        @keyframes starTwinkle { 0% { opacity:0.4; transform:scale(0.8) rotate(-5deg); } 100% { opacity:1; transform:scale(1.2) rotate(5deg); } }
+        .bow {
+            position: absolute; pointer-events:none;
+            animation: bowSway 3s ease-in-out infinite alternate;
+            font-size: clamp(2.5rem,6vw,4.5rem);
+            filter: drop-shadow(0 4px 12px rgba(255,150,180,0.4));
+        }
+        @keyframes bowSway { 0% { transform: rotate(-4deg) scale(1); } 100% { transform: rotate(4deg) scale(1.05); } }
+        .hb-banner {
+            position: absolute; bottom:18%; left:50%; transform:translateX(-50%);
+            display:flex; gap:4px; pointer-events:none; z-index:6;
+            animation: bannerSwing 2s ease-in-out infinite alternate;
+        }
+        @keyframes bannerSwing { 0% { transform: translateX(-50%) rotate(-1deg); } 100% { transform: translateX(-50%) rotate(1deg); } }
+        .hb-letter {
+            background: linear-gradient(135deg, #ff6b6b, #ffd700, #ff6b6b);
+            background-size:200% 200%;
+            animation: letterShimmer 2s ease-in-out infinite;
+            color:white; font-weight:900;
+            font-size: clamp(0.7rem,2vw,1.1rem);
+            width: clamp(20px,3vw,32px); height: clamp(28px,4vw,44px);
+            display:flex; align-items:center; justify-content:center;
+            border-radius:4px; box-shadow:0 3px 10px rgba(0,0,0,0.3);
+        }
+        @keyframes letterShimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+        .banner-string {
+            position: absolute; top:-20px; left:50%; transform:translateX(-50%);
+            width:102%; height:2px; background:rgba(255,215,0,0.4);
+        }
+        .balloon {
+            position: absolute; font-size: clamp(2.5rem,6vw,4.5rem);
+            animation: balloonRise ease-in-out infinite alternate; pointer-events:none;
+        }
+        @keyframes balloonRise { 0% { transform: translateY(0) rotate(-6deg); } 100% { transform: translateY(-22px) rotate(6deg); } }
+
+        /* ═══════════════ MAIN CONTENT ═══════════════ */
+        #mainContent {
+            position: relative; z-index: 10; width: 100%; max-width: 1100px;
+            opacity: 0; transition: opacity 1.2s ease;
+            padding: clamp(0.4rem, 1.5vw, 1rem) clamp(0.5rem, 2vw, 1rem) clamp(1rem, 2vw, 2rem);
+            display: flex; flex-direction: column; align-items: center; overflow: visible;
+            cursor: none;
+            min-height: 0;
+        }
+        #mainContent.visible { opacity: 1; }
+
+        .ambient-text { text-align: center; margin-bottom: clamp(0.6rem, 2vw, 1.2rem); position: relative; z-index: 2; }
+        .ambient-text h2 {
+            font-size: clamp(1.1rem,3.8vw,2.6rem); font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #a29bfe, #ffd700);
+            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shimmer 4s ease-in-out infinite; letter-spacing: 3px;
+        }
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .ambient-sub { font-size: clamp(0.6rem,1.6vw,1rem); color: rgba(255,255,255,0.25); letter-spacing: 5px; margin-top: 0.2rem; }
+
+        /* ── REVEALED DECK – exact 637.6 × 95.6 px; deck-wrapper scales it ── */
+        .revealed-deck {
+            width: 637.6px;
+            height: 95.6px;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            padding: 6px 8px;
+            border-radius: 14px;
+            background: rgba(100,60,200,.08);
+            border: 1px solid rgba(100,60,200,.12);
+            margin: 0 auto 24px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        /* ── DECK WRAPPER SCALING ──
+           The inner reference width is always 637.6px (deck) + 44px×2 (arrows) = 725.6px.
+           We scale the whole #deckWrapper down on smaller viewports so proportions stay
+           pixel-perfect while fitting the screen. JS also calls updateDeckScale() on resize. ── */
+        #deckWrapper {
+            transform-origin: top center;
+            margin-top: clamp(4px, 1.5vw, 12px);
+        }
+        .revealed-deck.rearranging::after {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.5), transparent);
+            pointer-events: none; z-index: 5;
+            animation: deckSweep 0.8s ease-in-out;
+        }
+        @keyframes deckSweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .deck-wrapper.no-interact { pointer-events: none; }
+
+        .slot {
+            height: 83.6px;
+            border-radius: 10px;
+            border: 1.5px dashed rgba(150,110,255,.15);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2px;
+            background: rgba(80,40,180,.04);
+            cursor: pointer;
+            transition: all .5s;
+            overflow: hidden;
+            position: relative;
+            will-change: transform;
+        }
+        .slot .slot-icon { font-size: 1.6rem; line-height: 1; }
+        .slot .slot-preview {
+            font-size: 0.32rem;
+            color: rgba(255,255,255,0.2); white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; max-width: 90%; font-family: 'Segoe UI', sans-serif;
+        }
+        .slot .slot-title {
+            font-size: 0.3rem;
+            color: rgba(255,215,0,0.15); letter-spacing: 0.5px;
+            font-family: 'Segoe UI', sans-serif; text-transform: uppercase;
+        }
+
+        .slot.filled {
+            border: 1.5px solid rgba(180,140,255,.35);
+            background: linear-gradient(145deg, rgba(55,18,95,.75), rgba(28,8,58,.85));
+            box-shadow: 0 0 18px rgba(140,70,255,.15), inset 0 0 10px rgba(255,215,0,.04);
+            cursor: pointer;
+        }
+        .slot.filled:hover {
+            border-color: rgba(255,215,0,.5);
+            box-shadow: 0 0 28px rgba(255,215,0,.25), 0 0 10px rgba(140,70,255,.25);
+            transform: translateY(-3px) scale(1.05);
+        }
+        .slot-empty-icon { font-size: 0.9rem; opacity: 0.12; }
+        .slot-empty-num { font-size: 0.28rem; color: rgba(255,255,255,0.06); letter-spacing: 1px; font-family: 'Segoe UI', sans-serif; }
+
+        /* ── 3D CAROUSEL ── */
+        .tarot-track-container {
+            position: relative;
+            width: 637.6px;   /* matches deck width exactly */
+            height: 500px;    /* fixed logical height; wrapper scale handles shrinking */
+            perspective: 1200px;
+            perspective-origin: 50% 45%;
+            overflow: hidden;
+        }
+
+        .tarot-track {
+            position: relative; width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+
+        /* ─── CARD SIZE – fixed; deck-wrapper scale adapts to viewport ─── */
+        :root {
+            --card-w: 180px;
+        }
+
+        .tarot-card {
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 180px;
+            aspect-ratio: 3/4;
+            margin-left: -90px;
+            margin-top: -120px;
+            transform: rotateY(var(--angle)) translateZ(var(--radius)) scale(var(--scale, 0.92));
+            opacity: 0.92; filter: brightness(1.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s;
+            cursor: pointer;
+            border-radius: 18px;
+            z-index: 1;
+            transform-style: preserve-3d;
+        }
+        .tarot-card:hover { --scale: 1.05; z-index: 6; opacity: 1; }
+        .tarot-card.card-hover-glow {
+            box-shadow: 0 0 25px rgba(255,215,0,0.5), 0 0 45px rgba(255,140,0,0.3);
+        }
+
+        /* Click burst */
+        .tarot-card.card-clicked::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 18px;
+            background: radial-gradient(circle at var(--click-x, 50%) var(--click-y, 50%), rgba(255,215,0,0.6) 0%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+            animation: burst 0.8s ease-out;
+        }
+        @keyframes burst { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(2); } }
+
+        /* ── CARD INNER FLIPPER ── */
+        .card-flipper {
+            position: relative;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: inherit;
+        }
+        .card-flipper.flipped { transform: rotateY(180deg); }
+
+        /* ── CARD FRONT / BACK ── */
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: inherit; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .card-front {
+            background: radial-gradient(ellipse at 30% 20%, #1a0a40, #03001a);
+            border: 2px solid rgba(180,160,255,.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,.5);
+        }
+        .card-front::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            animation: sweep 3s infinite;
+        }
+        @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .card-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+        .card-star {
+            position: absolute; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 4px #fff; animation: starTwinkleA var(--dur,2s) ease-in-out infinite alternate;
+        }
+        @keyframes starTwinkleA { 0% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+        .shooting-star {
+            position: absolute; width: 2px; height: 2px; background: #fff; opacity: 0;
+            border-radius: 50%; box-shadow: 0 0 6px 2px #fff;
+            animation: shoot var(--sdur,3s) ease-in var(--sdel,0s) infinite;
+        }
+        .shooting-star::after {
+            content: ''; position: absolute; top: 50%; right: 0; width: 40px; height: 1px;
+            background: linear-gradient(to left, #fff, transparent); transform: translateY(-50%);
+        }
+        @keyframes shoot { 0% { transform: translate(0,0) rotate(25deg); opacity: 1; } 70% { transform: translate(120px, -30px) rotate(25deg); opacity: 0; } 100% { opacity: 0; } }
+        .card-moon { position: absolute; top: 8px; right: 8px; font-size: clamp(0.6rem, 1.4vw, 1rem); opacity: 0.35; animation: floatMoon 3s infinite alternate; }
+        @keyframes floatMoon { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+        .card-front .front-icon {
+            font-size: clamp(1.4rem, 3.5vw, 3.8rem); position: relative; z-index: 1;
+            filter: drop-shadow(0 0 10px rgba(255,255,200,.4));
+            animation: backIconPulse 3s ease-in-out infinite;
+        }
+        @keyframes backIconPulse { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(8deg); } }
+        .card-front .front-love {
+            font-size: clamp(0.25rem, 0.7vw, 0.75rem); color: rgba(200,180,255,.5);
+            letter-spacing: 5px; font-family: 'Segoe UI', sans-serif; text-transform: uppercase; margin-top: 0.2rem; position: relative; z-index: 1;
+        }
+
+        /* ── REVEALED CARD BACK (the new beautiful revealed face) ── */
+        .card-back {
+            transform: rotateY(180deg);
+            border: 2px solid rgba(180,140,255,.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,.5);
+            padding: clamp(6px, 2vw, 14px);
+            flex-direction: column;
+            gap: clamp(2px, 0.8vw, 6px);
+        }
+        /* Revealed back gets the same starfield as front */
+        .card-back.revealed-back {
+            background: radial-gradient(ellipse at 70% 80%, #0d0525, #03001a);
+            border-color: rgba(255,215,0,.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 18px rgba(255,215,0,.12);
+        }
+        .card-back.revealed-back::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.06), transparent);
+            animation: sweepGold 4s infinite 1s;
+        }
+        @keyframes sweepGold { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        /* revealed back content */
+        .rback-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+        .rback-moon { position: absolute; top: 6px; left: 7px; font-size: clamp(0.5rem, 1.2vw, 0.9rem); opacity: 0.3; }
+        .rback-corner { position: absolute; font-size: clamp(0.4rem, 1vw, 0.7rem); opacity: 0.35; }
+
+        .rback-emoji {
+            font-size: clamp(1.2rem, 2.8vw, 3rem);
+            position: relative; z-index: 1;
+            filter: drop-shadow(0 0 12px var(--theme-color, #ffd700));
+            animation: backIconPulse 3s ease-in-out infinite;
+            line-height: 1;
+        }
+        .rback-title {
+            font-size: clamp(0.22rem, 0.65vw, 0.72rem);
+            font-weight: 700;
+            color: var(--theme-color, #ffd700);
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative; z-index: 1;
+            font-family: 'Segoe UI', sans-serif;
+            text-shadow: 0 0 8px var(--theme-color, #ffd700);
+            line-height: 1.1;
+        }
+        .rback-divider {
+            width: 60%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--theme-color, #ffd700), transparent);
+            opacity: 0.4;
+            position: relative; z-index: 1;
+        }
+        .rback-text {
+            font-size: clamp(0.18rem, 0.5vw, 0.54rem);
+            color: rgba(255,245,220,0.7);
+            line-height: 1.35;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            position: relative; z-index: 1;
+            max-width: 90%;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+        .rback-glow-orb {
+            position: absolute;
+            width: 60%; height: 60%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--theme-color, #ffd700), transparent 70%);
+            opacity: 0.04;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: orbPulse 4s ease-in-out infinite alternate;
+        }
+        @keyframes orbPulse { 0% { opacity:0.03; transform:translate(-50%,-50%) scale(0.9); } 100% { opacity:0.07; transform:translate(-50%,-50%) scale(1.1); } }
+
+        /* ── ARROWS – fixed 44 × 200 px always ── */
+        .tarot-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 44px;
+            height: 200px;
+            border: none; background: transparent;
+            font-size: 2.6rem;
+            cursor: pointer; z-index: 20;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; color: rgba(255,255,255,.25);
+            transition: opacity .3s, background .3s, color .3s;
+        }
+        .deck-wrapper:hover .tarot-arrow { opacity: 1; pointer-events: auto; }
+        @media (pointer: coarse) {
+            .tarot-arrow { opacity: 0.7 !important; pointer-events: auto !important; }
+        }
+        .tarot-arrow.prev {
+            left: 0; border-radius: 0 6px 6px 0;
+            background: linear-gradient(to right, rgba(4,0,15,.7), transparent);
+        }
+        .tarot-arrow.next {
+            right: 0; border-radius: 6px 0 0 6px;
+            background: linear-gradient(to left, rgba(4,0,15,.7), transparent);
+        }
+        .tarot-arrow:hover { color: #ffd700; }
+
+        /* ═══════════════ EXPANDED OVERLAY ═══════════════ */
+        #expandedOverlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
+            display: none; align-items: center; justify-content: center;
+            padding: clamp(0.8rem, 3vw, 1.5rem);
+        }
+        #expandedOverlay.show { display: flex; animation: overlayIn 0.3s ease; }
+        @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #galaxyCanvas, #fireworksCanvas {
+            position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            width: 100%; height: 100%;
+        }
+
+        .expanded-card {
+            position: relative; max-width: 680px; width: 100%;
+            max-height: 88dvh;
+            border-radius: clamp(16px, 3vw, 28px);
+            padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(0.8rem, 2vw, 1.4rem);
+            animation: cardFlipIn 0.5s ease; overflow-y: auto; z-index: 2;
+            background: linear-gradient(145deg, rgba(18,8,38,.98), rgba(38,18,58,.98));
+            border: 1.5px solid rgba(255,215,0,0.12);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .expanded-card::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: inherit;
+            background: radial-gradient(circle at 50% 30%, rgba(255,215,0,0.05), transparent 70%);
+            animation: gentlePulse 4s ease-in-out infinite alternate;
+            pointer-events: none; z-index: 0;
+        }
+        @keyframes gentlePulse { 0% { opacity: 0.4; } 100% { opacity: 0.9; } }
+        @keyframes cardFlipIn { from { transform: rotateY(90deg) scale(0.8); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } }
+        .expanded-big-emoji { font-size: clamp(2rem,6vw,4rem); text-align: center; display: block; margin-bottom: 0.5rem; position: relative; z-index: 1; }
+        .expanded-title { font-size: clamp(1.2rem,3.5vw,2.4rem); font-weight: 700; text-align: center; letter-spacing: 1px; margin-bottom: 1rem; position: relative; z-index: 1; }
+        .expanded-content {
+            font-size: clamp(0.85rem,2.3vw,1.3rem); color: #fff5e0; line-height: 1.75;
+            white-space: pre-wrap; word-break: break-word; min-height: 80px; max-height: 40vh;
+            overflow-y: auto; padding-right: 4px; position: relative; z-index: 1;
+        }
+        .type-cursor { display: inline-block; width: 2px; height: 1.1em; background: #ffd700; margin-left: 2px; animation: blink 0.8s infinite; vertical-align: text-bottom; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .expanded-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; position: relative; z-index: 1; flex-wrap: wrap; gap: 0.5rem; }
+        .expanded-back-btn {
+            background: rgba(255,200,210,0.1); border: 1px solid rgba(255,200,210,.15);
+            color: rgba(255,255,255,.7); padding: 0.5rem 1.2rem; border-radius: 40px;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem); cursor: pointer; transition: all .3s;
+        }
+        .expanded-back-btn:hover { background: rgba(255,200,210,.2); color: #fff; }
+        .expanded-index { font-size: clamp(0.6rem,1.2vw,0.7rem); color: rgba(255,255,255,.2); letter-spacing: 1px; }
+
+        /* ═══════════════ END SEQUENCE ═══════════════ */
+        #endSequence {
+            position: fixed; inset: 0; z-index: 450; display: none; flex-direction: column;
+            align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #1a0011, #04000f);
+            opacity: 0; transition: opacity 1s ease;
+            padding: 1rem;
+        }
+        #endSequence.show { display: flex; }
+        #endSequence.visible { opacity: 1; }
+        .end-cards-fan { position: relative; width: clamp(160px,40vw,260px); height: clamp(120px,24vw,180px); margin-bottom: 1rem; }
+        .fan-card {
+            position: absolute; width: clamp(42px,10vw,70px); height: clamp(60px,14vw,100px); border-radius: 10px;
+            border: 1px solid rgba(255,215,0,.25);
+            background: linear-gradient(145deg, rgba(20,10,40,.95), rgba(40,20,60,.95));
+            display: flex; align-items: center; justify-content: center;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            box-shadow: 0 8px 24px rgba(0,0,0,.5); transform-origin: bottom center;
+            animation: fanReveal 0.6s ease forwards; opacity: 0;
+        }
+        @keyframes fanReveal { from { opacity: 0; transform: var(--ff); } to { opacity: 1; transform: var(--ft); } }
+        .end-image { max-width: 65%; max-height: 40vh; border-radius: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.6); border: 2px solid rgba(255,215,0,.12); object-fit: contain; }
+        .end-text-wrapper { text-align: center; margin-top: 1.2rem; animation: endTextPop 0.8s ease 0.5s forwards; opacity: 0; }
+        @keyframes endTextPop { to { opacity: 1; } }
+        .end-text { font-size: clamp(1.3rem,5vw,3.2rem); font-weight: 700; background: linear-gradient(135deg, #ffd700, #ff6b6b, #a29bfe, #ffd700); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s infinite; }
+        .end-sub { font-size: clamp(0.75rem,2vw,1.2rem); color: rgba(255,255,255,.35); margin-top: 0.5rem; }
+
+        .back-menu-btn {
+            position: fixed; bottom: 16px; right: 16px; z-index: 600;
+            background: rgba(255,200,210,.08); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,200,210,.12);
+            padding: clamp(0.4rem,1vw,0.55rem) clamp(0.8rem,2vw,1.2rem);
+            border-radius: 50px;
+            color: rgba(255,255,255,.5); text-decoration: none; transition: all .3s;
+            font-size: clamp(0.65rem,1.5vw,0.78rem);
+            cursor: pointer;
+        }
+        .back-menu-btn:hover { background: rgba(255,200,210,.18); color: #fff; }
+
+        @media (pointer: coarse) {
+            #customCursor { display: none; }
+            body, #mainContent, #entryOverlay { cursor: auto; }
+        }
+
+        /* ── "All Revealed" label on deck ── */
+        .all-revealed-label {
+            position: absolute;
+            bottom: -22px;
+            left: 50%; transform: translateX(-50%);
+            font-size: clamp(0.5rem, 1.2vw, 0.72rem);
+            color: rgba(255,215,0,0.5);
+            letter-spacing: 3px;
+            white-space: nowrap;
+            font-family: 'Segoe UI', sans-serif;
+            text-transform: uppercase;
+            animation: shimmer 3s infinite;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #ffd700);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="customCursor"></div>
+    <video id="bgVideo" autoplay loop muted playsinline preload="auto">
+        <source src="Videos/us.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+    <div id="bgDecor"></div>
+
+    <!-- Entry overlay -->
+    <div id="entryOverlay">
+        <div class="corner-deco" style="top:5%;left:5%;animation-delay:0s">🎈</div>
+        <div class="corner-deco" style="top:8%;right:8%;animation-delay:0.4s">🎀</div>
+        <div class="corner-deco" style="bottom:10%;left:8%;animation-delay:0.8s">🎉</div>
+        <div class="corner-deco" style="bottom:12%;right:6%;animation-delay:1.2s">🎊</div>
+        <div class="corner-deco" style="top:28%;left:2%;animation-delay:0.2s;font-size:2.2rem">🌸</div>
+        <div class="corner-deco" style="top:32%;right:2%;animation-delay:0.6s;font-size:2.2rem">✨</div>
+
+        <div class="entry-container">
+            <span class="entry-cake">🎂</span>
+            <div class="entry-title">✨ Happy Birthday Girl ✨</div>
+            <div class="entry-sub">🎁 2026 – A Year of Magic 🎁</div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div id="mainContent">
+        <div class="ambient-text">
+            <h2>✦ Choose Your Card ✦</h2>
+            <div class="ambient-sub">— tap a card to reveal its message —</div>
+        </div>
+        <div class="deck-wrapper" id="deckWrapper">
+            <div style="position:relative;">
+                <div class="revealed-deck" id="revealedDeck"></div>
+            </div>
+            <div class="tarot-track-container" id="trackContainer">
+                <div class="tarot-track" id="tarotTrack"></div>
+                <button class="tarot-arrow prev" id="prevArrow">‹</button>
+                <button class="tarot-arrow next" id="nextArrow">›</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expanded overlay -->
+    <div id="expandedOverlay">
+        <canvas id="galaxyCanvas"></canvas>
+        <canvas id="fireworksCanvas"></canvas>
+        <div class="expanded-card" id="expandedCard">
+            <span class="expanded-big-emoji" id="expandedEmoji"></span>
+            <div class="expanded-title" id="expandedTitle"></div>
+            <div class="expanded-content">
+                <span id="expandedText"></span><span class="type-cursor"></span>
+            </div>
+            <div class="expanded-footer">
+                <button class="expanded-back-btn" id="expandedBackBtn">← Back</button>
+                <span class="expanded-index" id="expandedIndex">0 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- End sequence -->
+    <div id="endSequence">
+        <div class="end-cards-fan" id="endCardsFan"></div>
+        <img class="end-image" id="endImage" src="image/one.jpg" alt="Love">
+        <div class="end-text-wrapper">
+            <div class="end-text">💖 All Cards Revealed 💖</div>
+            <div class="end-sub">✨ Every moment with you is magic ✨</div>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-menu-btn" id="backMenuBtn">⬅ Back to Menu</a>
+
+    <audio id="entryAudio" loop preload="auto">
+        <source src="audio/soulprodmusic-happy-birthday-220024.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="cardAudio" preload="auto"></audio>
+
+    <script>
+        (function() {
+        
+    // ═══ DISABLE RIGHT-CLICK & DEVTOOLS KEYS ═══
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.onkeydown = function(e) {
+        // F12 (keyCode 123), Ctrl+Shift+I (73)
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+            return false;
+        }
+    };
+            const CARD_DATA = [
+                { id: 1, icon: '🌟', label: 'Star',   theme: 7, title: 'The Star', content: 'You are the brightest star in my sky.\n\nYour light guides me through the darkest nights. Never forget how much you shine — every day, every moment, you illuminate the world around you with a warmth that is entirely your own.', music: 'audio/ed-sheeran-photograph.mp3' },
+                { id: 2, icon: '💖', label: 'Love',   theme: 2, title: 'Infinite Love', content: 'Your love is the most beautiful thing I have ever known.\n\nEvery day with you is a gift, and I cherish every moment we share. You have taught me what it means to love unconditionally and to be loved in return.', music: 'audio/card2.mp3' },
+                { id: 3, icon: '🌹', label: 'Rose',   theme: 6, title: 'Eternal Beauty', content: 'Like a rose, you bloom with grace and strength.\n\nYour beauty, both inside and out, leaves me breathless every single day. You carry elegance in everything you do — in your smile, your kindness, your laughter.', music: 'audio/card3.mp3' },
+                { id: 4, icon: '🦋', label: 'Butterfly', theme: 4, title: 'Transformation', content: 'You have transformed my world in ways I never imagined.\n\nWith you, I have become a better version of myself. You bring out colours in life I did not even know existed. Thank you for being exactly who you are.', music: 'audio/card4.mp3' },
+                { id: 5, icon: '🌙', label: 'Moon',   theme: 1, title: 'Moonlight', content: 'Your presence is like moonlight — soft, calming, and endlessly beautiful.\n\nYou light up my darkest hours with your gentle glow. Even on nights when the world feels heavy, just thinking of you makes everything feel lighter and more peaceful.', music: 'audio/card5.mp3' },
+                { id: 6, icon: '🌈', label: 'Rainbow', theme: 5, title: 'After the Rain', content: 'You are the rainbow after every storm.\n\nYour smile brings colour to my world and hope to my heart. No matter how difficult the day has been, you remind me that beauty always follows the rain. I am so grateful for you.', music: 'audio/card6.mp3' },
+                { id: 7, icon: '🎵', label: 'Melody', theme: 0, title: 'Sweet Melody', content: 'Your voice is the sweetest melody I have ever heard.\n\nIt soothes my soul and fills my heart with joy. The way you laugh, the way you speak — it is music to me. I want to keep listening to you forever and never stop.', music: 'audio/card7.mp3' },
+                { id: 8, icon: '💎', label: 'Gem',    theme: 3, title: 'Precious Gem', content: 'You are a rare and precious gem.\n\nYour kindness, your strength, your love — all of it makes you priceless. The world is lucky to have you in it, and I am the luckiest of all to have you in my life. Never forget your worth.', music: 'audio/card8.mp3' }
+            ];
+            const THEME_COLORS = ['#c084fc','#60a5fa','#f472b6','#fbbf24','#2dd4bf','#e879f9','#fb7185','#ffd700'];
+            const TOTAL = 8;
+            let revealedIds = [];
+            let isExpanded = false;
+            let typeTimer = null;
+            let endDone = false;
+            let rearranging = false;
+            let currentAngle = 0;
+            const angleStep = 360 / TOTAL;
+            let galaxyRaf, fwRaf, fwInterval, fwParticles = [];
+
+            const mainContent = document.getElementById('mainContent');
+            const revealedDeck = document.getElementById('revealedDeck');
+            const tarotTrack = document.getElementById('tarotTrack');
+            const trackContainer = document.getElementById('trackContainer');
+            const prevArrow = document.getElementById('prevArrow');
+            const nextArrow = document.getElementById('nextArrow');
+            const deckWrapper = document.getElementById('deckWrapper');
+            const expandedOverlay = document.getElementById('expandedOverlay');
+            const expandedEmoji = document.getElementById('expandedEmoji');
+            const expandedTitle = document.getElementById('expandedTitle');
+            const expandedText = document.getElementById('expandedText');
+            const expandedIndex = document.getElementById('expandedIndex');
+            const expandedBackBtn = document.getElementById('expandedBackBtn');
+            const cardAudio = document.getElementById('cardAudio');
+            const endSequence = document.getElementById('endSequence');
+            const endImage = document.getElementById('endImage');
+            const endCardsFan = document.getElementById('endCardsFan');
+            const cursorEl = document.querySelector('.type-cursor');
+            const galaxyCanvas = document.getElementById('galaxyCanvas');
+            const fireworksCanvas = document.getElementById('fireworksCanvas');
+            const customCursor = document.getElementById('customCursor');
+
+            function shuffle(arr) { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+            /* ══════════ CUSTOM CURSOR ══════════ */
+            document.addEventListener('mousemove', e => {
+                customCursor.style.left = e.clientX + 'px';
+                customCursor.style.top = e.clientY + 'px';
+            });
+
+            trackContainer.addEventListener('mouseover', e => {
+                const card = e.target.closest('.tarot-card');
+                if (card) { card.classList.add('card-hover-glow'); customCursor.style.transform = 'translate(-50%, -50%) scale(1.5)'; }
+            });
+            trackContainer.addEventListener('mouseout', e => {
+                const card = e.target.closest('.tarot-card');
+                if (card) { card.classList.remove('card-hover-glow'); customCursor.style.transform = 'translate(-50%, -50%) scale(1)'; }
+            });
+
+            /* ══════════ Click burst ══════════ */
+            function addClickBurst(card, e) {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--click-x', (e.clientX - rect.left) + 'px');
+                card.style.setProperty('--click-y', (e.clientY - rect.top) + 'px');
+                card.classList.add('card-clicked');
+                setTimeout(() => card.classList.remove('card-clicked'), 800);
+            }
+
+            /* ══════════ Entry decorations ══════════ */
+            function addEntryDecorations() {
+                const overlay = document.getElementById('entryOverlay');
+                const ribbonColors = ['#ff6b6b','#ffd700','#a29bfe','#fd79a8','#55efc4','#74b9ff'];
+                for (let i = 0; i < 40; i++) {
+                    const r = document.createElement('div'); r.className = 'ribbon';
+                    r.style.left = Math.random() * 100 + '%'; r.style.top = '-60px';
+                    r.style.height = (40 + Math.random() * 80) + 'px';
+                    r.style.background = ribbonColors[Math.floor(Math.random() * ribbonColors.length)];
+                    r.style.animationDuration = (3 + Math.random() * 4) + 's';
+                    r.style.animationDelay = (Math.random() * 4) + 's';
+                    overlay.appendChild(r);
+                }
+                const starPositions = [15, 28, 42, 55, 68, 80];
+                starPositions.forEach((leftPct, i) => {
+                    const line = document.createElement('div'); line.className = 'string-line';
+                    line.style.left = leftPct + '%'; line.style.height = (80 + Math.random() * 80) + 'px';
+                    line.style.animationDelay = (i * 0.2) + 's'; overlay.appendChild(line);
+                    const star = document.createElement('div'); star.className = 'star-light';
+                    star.textContent = i % 2 === 0 ? '⭐' : '✨';
+                    star.style.left = (leftPct - 1.5) + '%'; star.style.top = (80 + Math.random() * 80) + 'px';
+                    star.style.animationDelay = (i * 0.3) + 's';
+                    star.style.animationDuration = (1.2 + Math.random() * 1) + 's';
+                    overlay.appendChild(star);
+                });
+                const bowData = [
+                    { left: '0%', top: '5%', delay: '0s' }, { left: '0%', top: '40%', delay: '0.5s' },
+                    { right: '0%', top: '8%', delay: '0.3s' }, { right: '0%', top: '42%', delay: '0.8s' },
+                ];
+                bowData.forEach(b => {
+                    const bow = document.createElement('div'); bow.className = 'bow'; bow.textContent = '🎀';
+                    if (b.left !== undefined) bow.style.left = b.left;
+                    if (b.right !== undefined) bow.style.right = b.right;
+                    bow.style.top = b.top; bow.style.animationDelay = b.delay;
+                    overlay.appendChild(bow);
+                });
+                const hbText = 'HAPPY BIRTHDAY';
+                const banner = document.createElement('div'); banner.className = 'hb-banner';
+                const bString = document.createElement('div'); bString.className = 'banner-string'; banner.appendChild(bString);
+                [...hbText].forEach((ch, i) => {
+                    const letter = document.createElement('div'); letter.className = 'hb-letter';
+                    letter.textContent = ch === ' ' ? '' : ch;
+                    if (ch === ' ') letter.style.width = '10px';
+                    letter.style.animationDelay = (i * 0.05) + 's';
+                    banner.appendChild(letter);
+                });
+                overlay.appendChild(banner);
+                const balloonPositions = [
+                    { left:'5%', bottom:'15%', delay:'0s' }, { left:'15%', bottom:'8%', delay:'0.3s' },
+                    { left:'80%', bottom:'12%', delay:'0.6s' }, { left:'90%', bottom:'18%', delay:'0.9s' },
+                    { left:'50%', bottom:'5%', delay:'0.15s' },
+                ];
+                const balloonEmojis = ['🎈','🎈','🎈','🎉','🎊','🎀'];
+                balloonPositions.forEach(pos => {
+                    const b = document.createElement('div'); b.className = 'balloon';
+                    b.textContent = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+                    b.style.left = pos.left; b.style.bottom = pos.bottom;
+                    b.style.animationDelay = pos.delay; b.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+                    overlay.appendChild(b);
+                });
+            }
+            addEntryDecorations();
+
+            /* ══════════ Background floating emojis ══════════ */
+            const bgDecor = document.getElementById('bgDecor');
+            const floatEmojis = ['❤️','💖','💕','✨','⭐','💫','🌸','🌺','🎵','💗','🌹','🦋','🎈','🎀','🎉'];
+            function spawnFloat() {
+                const el = document.createElement('div'); el.className = 'bg-float';
+                el.textContent = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (0.7 + Math.random() * 1.6) + 'rem';
+                el.style.animationDuration = (9 + Math.random() * 14) + 's';
+                bgDecor.appendChild(el);
+                setTimeout(() => el.remove(), 24000);
+            }
+            for (let i = 0; i < 25; i++) setTimeout(spawnFloat, i * 350);
+            setInterval(spawnFloat, 2800);
+
+            /* ══════════ Entry audio ══════════ */
+            const entryAudio = document.getElementById('entryAudio');
+            entryAudio.play().catch(()=>{});
+            setTimeout(() => {
+                document.getElementById('entryOverlay').classList.add('hidden');
+                mainContent.classList.add('visible');
+                const fade = setInterval(() => {
+                    if (entryAudio.volume > 0.05) entryAudio.volume -= 0.05;
+                    else { entryAudio.pause(); entryAudio.currentTime = 0; entryAudio.volume = 1; clearInterval(fade); }
+                }, 80);
+            }, 4500);
+
+            /* ══════════ Render revealed deck ══════════ */
+            function renderRevealedDeck() {
+                revealedDeck.innerHTML = '';
+                for (let i = 0; i < TOTAL; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'slot';
+                    const cardId = revealedIds[i];
+                    if (cardId) {
+                        const card = CARD_DATA.find(c => c.id === cardId);
+                        slot.classList.add('filled');
+                        slot.dataset.cardId = card.id;
+                        slot.innerHTML = `
+                            <span class="slot-icon">${card.icon}</span>
+                            <span class="slot-preview">${card.content.substring(0, 30).replace(/\n/g, ' ')}…</span>
+                            <span class="slot-title">${card.title}</span>
+                        `;
+                        slot.addEventListener('click', () => { if (!rearranging) openCard(card.id, false); });
+                    } else {
+                        slot.innerHTML = `<span class="slot-empty-icon">✦</span><span class="slot-empty-num">${i+1}</span>`;
+                    }
+                    revealedDeck.appendChild(slot);
+                }
+            }
+
+            /* ══════════ Star HTML helpers ══════════ */
+            function buildStarsHtml(count=12) {
+                let h = '';
+                for (let i = 0; i < count; i++) {
+                    const s = (0.8 + Math.random() * 2.5).toFixed(1);
+                    const dur = (1 + Math.random() * 2.5).toFixed(1);
+                    const del = (Math.random() * 2).toFixed(1);
+                    h += `<div class="card-star" style="width:${s}px;height:${s}px;left:${(Math.random()*92).toFixed(1)}%;top:${(Math.random()*92).toFixed(1)}%;--dur:${dur}s;animation-delay:${del}s;"></div>`;
+                }
+                for (let i = 0; i < 2; i++) {
+                    const sdur = (3 + Math.random() * 4).toFixed(1);
+                    const sdel = (Math.random() * 5).toFixed(1);
+                    h += `<div class="shooting-star" style="top:${(10+Math.random()*50).toFixed(1)}%;left:${(5+Math.random()*60).toFixed(1)}%;--sdur:${sdur}s;--sdel:${sdel}s;"></div>`;
+                }
+                return h;
+            }
+
+            /* ── Build un-revealed card front HTML ── */
+            function buildCardFrontHtml(card) {
+                return `
+                    <div class="card-flipper">
+                        <div class="card-front">
+                            <div class="card-stars">${buildStarsHtml()}</div>
+                            <div class="card-moon">🌙</div>
+                            <div class="front-icon">${card.icon}</div>
+                            <div class="front-love">✦ love ✦</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-emoji" style="font-size:clamp(1rem,2.5vw,2rem)">${card.icon}</div>
+                            <div class="card-title-mini" style="font-size:clamp(0.4rem,1vw,0.8rem);color:#ffd700;font-weight:600;margin-top:0.15rem;font-family:'Segoe UI',sans-serif;">${card.title}</div>
+                            <div class="card-preview" style="font-size:clamp(0.3rem,0.7vw,0.48rem);color:rgba(255,255,255,.35);line-height:1.3;margin-top:0.2rem;font-family:'Segoe UI',sans-serif;text-align:center;padding:0 6%;">${card.content.substring(0,62).replace(/\n/g,' ')}…</div>
+                        </div>
+                    </div>`;
+            }
+
+            /* ── Build REVEALED card HTML (front = beautiful revealed face, back = original mystic design) ── */
+            function buildRevealedCardHtml(card) {
+                const themeColor = THEME_COLORS[card.theme];
+                // We show the revealed content on the FRONT (no flip needed, it just looks great)
+                // The card-front becomes the beautiful revealed face
+                const firstLine = card.content.split('\n')[0];
+                const restText = card.content.replace(firstLine, '').replace(/^\n+/, '');
+                return `
+                    <div class="card-flipper">
+                        <div class="card-front revealed-face" style="
+                            background: radial-gradient(ellipse at 70% 80%, #0d0525, #03001a);
+                            border-color: ${themeColor}55;
+                            box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 24px ${themeColor}22;
+                        ">
+                            <div class="rback-stars">${buildStarsHtml(14)}</div>
+                            <div class="rback-moon">🌙</div>
+                            <div class="rback-corner" style="bottom:7px;right:8px;">✦</div>
+                            <div class="rback-corner" style="top:7px;left:8px;">✦</div>
+                            <div class="rback-glow-orb" style="--theme-color:${themeColor}"></div>
+
+                            <div class="rback-emoji" style="--theme-color:${themeColor};font-size:clamp(1.1rem,2.6vw,2.8rem)">${card.icon}</div>
+                            <div class="rback-title" style="--theme-color:${themeColor};font-size:clamp(0.2rem,0.6vw,0.68rem)">${card.title}</div>
+                            <div class="rback-divider" style="--theme-color:${themeColor}"></div>
+                            <div class="rback-text" style="font-size:clamp(0.17rem,0.47vw,0.52rem)">${firstLine}</div>
+                            <div class="rback-text" style="font-size:clamp(0.15rem,0.4vw,0.44rem);opacity:0.6;margin-top:1px;">${restText.substring(0,80).replace(/\n/g,' ')}…</div>
+                        </div>
+                        <div class="card-back" style="transform:rotateY(180deg);background:radial-gradient(ellipse at 30%20%,#1a0a40,#03001a);border-color:rgba(180,160,255,.3);">
+                            <div class="card-stars">${buildStarsHtml(8)}</div>
+                            <div class="card-moon">🌙</div>
+                            <div class="front-icon" style="font-size:clamp(1.4rem,3.5vw,3.8rem)">${card.icon}</div>
+                            <div class="front-love" style="font-size:clamp(0.25rem,0.7vw,0.75rem)">✦ love ✦</div>
+                        </div>
+                    </div>`;
+            }
+
+            /* ══════════ 3D Carousel radius – always 330, wrapper scale adapts ══════════ */
+            function getRadius() { return 330; }
+
+            /* ══════════ Render 3D tarot cards ══════════ */
+            function renderTarotCards() {
+                tarotTrack.innerHTML = '';
+                const allRevealed = revealedIds.length === TOTAL;
+                const radius = getRadius();
+
+                // Which cards to show and in which order
+                let cardsToShow;
+                if (allRevealed) {
+                    cardsToShow = CARD_DATA;
+                } else {
+                    const available = CARD_DATA.filter(c => !revealedIds.includes(c.id));
+                    cardsToShow = shuffle(available);
+                }
+
+                const n = cardsToShow.length;
+                if (n === 0) return;
+
+                // Always space cards evenly starting from 0° so index-0 card
+                // is always dead-center front. currentAngle = 0 keeps it there.
+                const stepAngle = 360 / n;
+
+                cardsToShow.forEach((card, index) => {
+                    // index 0 → 0° (front), index 1 → stepAngle, etc.
+                    const angle = index * stepAngle;
+                    const div = document.createElement('div');
+                    div.className = 'tarot-card';
+                    div.dataset.cardId = card.id;
+                    div.style.setProperty('--angle', `${angle}deg`);
+                    div.style.setProperty('--radius', `${radius}px`);
+                    div.innerHTML = allRevealed ? buildRevealedCardHtml(card) : buildCardFrontHtml(card);
+
+                    div.addEventListener('click', function(e) {
+                        if (rearranging) return;
+                        addClickBurst(this, e);
+                        if (isExpanded) return;
+                        if (this.classList.contains('revealing')) return;
+                        if (allRevealed) {
+                            openCard(card.id, false);
+                        } else if (!revealedIds.includes(card.id)) {
+                            this.classList.add('revealing');
+                            const flipper = this.querySelector('.card-flipper');
+                            if (flipper) flipper.classList.add('flipped');
+                            setTimeout(() => { this.classList.remove('revealing'); openCard(card.id, true); }, 700);
+                        } else {
+                            openCard(card.id, false);
+                        }
+                    });
+                    tarotTrack.appendChild(div);
+                });
+
+                // Always start with angle 0 — index-0 card is perfectly front-center
+                currentAngle = 0;
+                updateCarousel();
+            }
+
+            function updateCarousel() {
+                tarotTrack.style.transform = `rotateY(${currentAngle}deg)`;
+            }
+
+            function getStepAngle() { return 360 / Math.max(1, tarotTrack.children.length); }
+            function goPrev() { currentAngle += getStepAngle(); updateCarousel(); }
+            function goNext() { currentAngle -= getStepAngle(); updateCarousel(); }
+
+            prevArrow.addEventListener('click', goPrev);
+            nextArrow.addEventListener('click', goNext);
+            document.addEventListener('keydown', e => {
+                if (isExpanded) { if (e.key === 'Escape') closeExpanded(); return; }
+                if (e.key === 'ArrowLeft') goPrev();
+                if (e.key === 'ArrowRight') goNext();
+            });
+            let touchStartX;
+            trackContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+            trackContainer.addEventListener('touchend', e => {
+                if (Math.abs(touchStartX - e.changedTouches[0].screenX) > 40) {
+                    if (touchStartX > e.changedTouches[0].screenX) goNext(); else goPrev();
+                }
+            });
+
+            function spinReel() {
+                // Animate a 360° spin from wherever we are; the subsequent
+                // renderTarotCards() call (950ms) will reset to currentAngle=0
+                const startAngle = currentAngle;
+                tarotTrack.style.transition = 'none';
+                tarotTrack.style.transform = `rotateY(${startAngle}deg)`;
+                void tarotTrack.offsetWidth;
+                tarotTrack.style.transition = 'transform 0.85s ease';
+                tarotTrack.style.transform = `rotateY(${startAngle + 360}deg)`;
+                // Don't reset here — renderTarotCards will set currentAngle=0 cleanly
+            }
+
+            function openCard(cardId, isNew) {
+                if (rearranging) return;
+                const card = CARD_DATA.find(c => c.id === cardId);
+                if (!card) return;
+                if (isNew && !revealedIds.includes(cardId)) {
+                    revealedIds.push(cardId);
+                    spinReel();
+                    renderRevealedDeck();
+                    setTimeout(() => renderTarotCards(), 950); // rebuild after spin
+                }
+                if (card.music) { cardAudio.src = card.music; cardAudio.volume = 0.35; cardAudio.play().catch(()=>{}); }
+                expandedEmoji.textContent = card.icon;
+                expandedTitle.textContent = card.title;
+                expandedTitle.style.color = THEME_COLORS[card.theme];
+                expandedText.innerHTML = '';
+                expandedIndex.textContent = `${Math.max(revealedIds.length, revealedIds.includes(cardId)?revealedIds.length:revealedIds.length)} / ${TOTAL}`;
+                if (typeTimer) clearTimeout(typeTimer);
+                let ci = 0; const txt = card.content;
+                cursorEl.style.display = 'inline-block';
+                function type() {
+                    if (ci < txt.length) { expandedText.innerHTML += txt.charAt(ci++); typeTimer = setTimeout(type, 32 + Math.random() * 16); }
+                    else { cursorEl.style.display = 'none'; }
+                }
+                expandedOverlay.classList.add('show');
+                isExpanded = true;
+                startGalaxy();
+                startFireworks(card.theme);
+                setTimeout(type, 280);
+                if (revealedIds.length === TOTAL && !endDone && !rearranging) {
+                    setTimeout(startRearrangeAnimation, 1400);
+                }
+            }
+
+            function closeExpanded() {
+                expandedOverlay.classList.remove('show');
+                isExpanded = false;
+                cardAudio.pause(); cardAudio.currentTime = 0;
+                if (typeTimer) clearTimeout(typeTimer);
+                stopGalaxy(); stopFireworks();
+            }
+            expandedBackBtn.addEventListener('click', closeExpanded);
+            expandedOverlay.addEventListener('click', e => { if (e.target === expandedOverlay) closeExpanded(); });
+
+            function startGalaxy() {
+                galaxyCanvas.width = window.innerWidth; galaxyCanvas.height = window.innerHeight;
+                const ctx = galaxyCanvas.getContext('2d');
+                const stars = Array.from({length: 200}, () => ({ x: Math.random()*galaxyCanvas.width, y: Math.random()*galaxyCanvas.height*0.5, r: Math.random()*1.8+0.3, a: Math.random(), da: (Math.random()-0.5)*0.012 }));
+                function frame() {
+                    ctx.clearRect(0,0,galaxyCanvas.width,galaxyCanvas.height);
+                    stars.forEach(s => { s.a += s.da; if(s.a<0.1||s.a>1)s.da*=-1; ctx.save(); ctx.globalAlpha=s.a*0.95; ctx.fillStyle='#fff'; ctx.shadowBlur=5; ctx.shadowColor='#c0d0ff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); ctx.restore(); });
+                    galaxyRaf = requestAnimationFrame(frame);
+                }
+                cancelAnimationFrame(galaxyRaf); frame();
+            }
+            function stopGalaxy() { cancelAnimationFrame(galaxyRaf); }
+
+            class Particle {
+                constructor(x,y,color){ this.x=x; this.y=y; this.color=color; const a=Math.random()*Math.PI*2, sp=2+Math.random()*5.5; this.vx=Math.cos(a)*sp; this.vy=Math.sin(a)*sp-Math.random()*2; this.life=1; this.decay=0.018+Math.random()*0.022; this.size=1.8+Math.random()*2.8; this.gravity=0.08; }
+                update(){ this.x+=this.vx; this.y+=this.vy; this.vy+=this.gravity; this.life-=this.decay; this.size*=.97; }
+                draw(ctx){ ctx.save(); ctx.globalAlpha=Math.max(0,this.life); ctx.fillStyle=this.color; ctx.shadowColor=this.color; ctx.shadowBlur=7; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); ctx.restore(); }
+            }
+            function startFireworks(themeIdx) {
+                fireworksCanvas.width=window.innerWidth; fireworksCanvas.height=window.innerHeight;
+                const ctx=fireworksCanvas.getContext('2d');
+                fwParticles=[]; clearInterval(fwInterval); cancelAnimationFrame(fwRaf);
+                function launch(){ const x=window.innerWidth*0.1+Math.random()*window.innerWidth*0.8, y=window.innerHeight*0.55+Math.random()*window.innerHeight*0.4; const col=THEME_COLORS[Math.floor(Math.random()*THEME_COLORS.length)]; for(let i=0;i<80;i++) fwParticles.push(new Particle(x,y,col)); }
+                launch(); launch(); launch();
+                fwInterval=setInterval(()=>{ launch(); if(Math.random()>0.4)launch(); },380);
+                function frame(){ ctx.clearRect(0,0,fireworksCanvas.width,fireworksCanvas.height); fwParticles=fwParticles.filter(p=>p.life>0); fwParticles.forEach(p=>{p.update();p.draw(ctx);}); fwRaf=requestAnimationFrame(frame); }
+                frame();
+            }
+            function stopFireworks(){ clearInterval(fwInterval); cancelAnimationFrame(fwRaf); }
+
+            /* ══════════ Rearrange animation (FLIP + sweep) ══════════ */
+            function startRearrangeAnimation() {
+                if (rearranging) return;
+                rearranging = true;
+                deckWrapper.classList.add('no-interact');
+                const slots = [...revealedDeck.children];
+                if (slots.length < TOTAL) { rearranging = false; deckWrapper.classList.remove('no-interact'); return; }
+                const oldPositions = slots.map(slot => slot.getBoundingClientRect());
+                const slotMap = {};
+                slots.forEach(slot => { const id = parseInt(slot.dataset.cardId); if (id) slotMap[id] = slot; });
+                const newSlots = CARD_DATA.map(card => slotMap[card.id]).filter(Boolean);
+                if (newSlots.length < TOTAL) { rearranging = false; deckWrapper.classList.remove('no-interact'); triggerEnd(); return; }
+                revealedDeck.innerHTML = '';
+                newSlots.forEach(slot => revealedDeck.appendChild(slot));
+                void revealedDeck.offsetWidth;
+                const newPositions = newSlots.map(slot => slot.getBoundingClientRect());
+                newSlots.forEach((slot, i) => {
+                    const dx = oldPositions[i].left - newPositions[i].left;
+                    const dy = oldPositions[i].top - newPositions[i].top;
+                    slot.style.transform = `translate(${dx}px, ${dy}px)`;
+                    slot.style.transition = 'none';
+                });
+                void revealedDeck.offsetWidth;
+                revealedDeck.classList.add('rearranging');
+                requestAnimationFrame(() => {
+                    newSlots.forEach(slot => {
+                        slot.style.transition = 'transform 0.8s ease';
+                        slot.style.transform = '';
+                    });
+                });
+                setTimeout(() => {
+                    revealedDeck.classList.remove('rearranging');
+                    rearranging = false;
+                    deckWrapper.classList.remove('no-interact');
+                    triggerEnd();
+                }, 850);
+            }
+
+            function triggerEnd() {
+                if (endDone) return;
+                endDone = true;
+                revealedIds = CARD_DATA.map(c => c.id);
+                renderRevealedDeck();
+                renderTarotCards(); // rebuild with beautiful revealed faces
+                buildFan();
+                endImage.src = 'images/final.jpg';
+                endSequence.classList.add('show');
+                requestAnimationFrame(() => requestAnimationFrame(() => endSequence.classList.add('visible')));
+                setTimeout(() => {
+                    endSequence.style.transition = 'opacity 0.8s ease';
+                    endSequence.style.opacity = '0';
+                    setTimeout(() => {
+                        endSequence.classList.remove('show','visible');
+                        endSequence.style.opacity = '';
+                    }, 800);
+                }, 6000);
+            }
+
+            function buildFan() {
+                endCardsFan.innerHTML = '';
+                const spread = 145;
+                CARD_DATA.forEach((card, i) => {
+                    const angle = -spread/2 + (spread/(TOTAL-1))*i;
+                    const fc = document.createElement('div'); fc.className = 'fan-card'; fc.textContent = card.icon;
+                    fc.style.setProperty('--ff', `rotate(${angle}deg) translateY(60px)`);
+                    fc.style.setProperty('--ft', `rotate(${angle}deg) translateY(0px)`);
+                    fc.style.animationDelay = (i*0.08)+'s';
+                    fc.style.left = '50%'; fc.style.bottom = '0';
+                    endCardsFan.appendChild(fc);
+                });
+                // Center each card using its actual rendered width (varies by
+                // viewport since .fan-card width is a clamp()), instead of a
+                // hardcoded -36px that only matched the laptop size.
+                requestAnimationFrame(() => {
+                    [...endCardsFan.children].forEach(fc => {
+                        fc.style.marginLeft = (-fc.offsetWidth / 2) + 'px';
+                    });
+                });
+            }
+
+            /* ══════════ Responsive scaling ══════════
+               The logical layout is always 725.6px wide (637.6 deck + 44 arrow × 2).
+               We scale the whole #deckWrapper down proportionally on smaller screens
+               so every pixel measurement stays identical — no media-query math needed. */
+            function updateDeckScale() {
+                const LOGICAL_W = 725.6;   // deck 637.6 + arrows 44×2
+                const LOGICAL_H = 700;     // deck 95.6 + carousel 500 + gap ~24 + label ~24
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                // Reserve space above (ambient text) and below (back-to-menu) the deck
+                const reservedV = 140;
+                const scaleX = (vw - 24) / LOGICAL_W;
+                const scaleY = (vh - reservedV) / LOGICAL_H;
+                const scale = Math.min(scaleX, scaleY, 1); // never upscale beyond 1
+                deckWrapper.style.transform = scale < 1 ? `scale(${scale.toFixed(4)})` : '';
+                // transform-origin is "top center", so scaling never pulls the
+                // wrapper upward — only the reserved space BELOW it shrinks,
+                // collapsing the now-empty gap so nothing overlaps and nothing
+                // leaves a big blank area underneath.
+                const scaledH = Math.round(LOGICAL_H * scale);
+                deckWrapper.style.marginBottom = scale < 1 ? `${scaledH - LOGICAL_H}px` : '';
+            }
+
+            function init() {
+                revealedIds = []; endDone = false; rearranging = false; currentAngle = 0;
+                updateDeckScale();
+                renderRevealedDeck(); renderTarotCards();
+                setTimeout(spinReel, 200);
+            }
+            init();
+
+            window.addEventListener('resize', () => { updateDeckScale(); renderTarotCards(); });
+            document.getElementById('backMenuBtn').addEventListener('click', () => sessionStorage.setItem('entry2025Played', 'true'));
+        })();
+    </script>
+</body>
+</html>

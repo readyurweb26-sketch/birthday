@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>💖 For My Forgoten Lover 💖</title>
+   <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ----- RESET ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100dvh;
+            overflow: hidden;
+            font-family: 'Georgia', 'Segoe UI', 'Poppins', sans-serif;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #0a0015 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 1rem;
+        }
+
+        /* ----- BACKGROUND DECORATIONS ----- */
+        #bgDecor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .float-item {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.4rem;
+            animation: floatUp linear infinite;
+            opacity: 0.3;
+            user-select: none;
+        }
+        .float-item.heart { color: #ff6b6b; font-size: 1.8rem; }
+        .float-item.sparkle { color: #ffd700; font-size: 0.9rem; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.6); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        .glow-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 92vmin;
+            height: 92vmin;
+            max-width: 800px;
+            max-height: 800px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.04);
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.03);
+            animation: pulseGlow 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { border-color: rgba(255, 215, 0, 0.04); }
+            50% { border-color: rgba(255, 215, 0, 0.15); }
+        }
+
+        /* ----- MAIN CARD ----- */
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 1.8rem 1.8rem 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 92dvh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.02);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.2) transparent;
+        }
+        .card::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-track { background: transparent; }
+        .card::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.2); border-radius: 4px; }
+
+        .card-title {
+            font-size: clamp(1.6rem, 5vw, 2.6rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #ffd700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
+            text-align: center;
+            margin-bottom: 1.2rem;
+            letter-spacing: 1px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ----- FLEX CONTAINER (text + image) ----- */
+        .flex-container {
+            display: flex;
+            gap: 2rem;
+            align-items: stretch;
+            min-height: 300px;
+        }
+
+        /* ----- LEFT: TYPEWRITER TEXT (fully justified) ----- */
+        .text-column {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        #typewriter-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.15) transparent;
+            max-height: 320px;
+        }
+        #typewriter-wrapper::-webkit-scrollbar { width: 3px; }
+        #typewriter-wrapper::-webkit-scrollbar-track { background: transparent; }
+        #typewriter-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.15); border-radius: 3px; }
+
+        #typewriter {
+            font-size: clamp(1rem, 2.8vw, 1.4rem);
+            color: #fff5e0;
+            line-height: 1.7;
+            font-family: 'Courier New', 'Georgia', monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: justify;
+            text-justify: inter-word;
+            text-align-last: justify;   /* ← HAR LINE LEFT + RIGHT (JUSTIFY) */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #typewriter .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: #ffd700;
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ----- RIGHT: IMAGE CAROUSEL ----- */
+        .image-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            max-width: 45%;
+        }
+
+        .image-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1437 / 1599;
+            max-height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: opacity 0.6s ease;
+        }
+
+        .slider-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-top: 0.6rem;
+        }
+
+        .slider-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slider-btn:hover {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .slider-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .slider-dot.active {
+            background: #ffd700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+            transform: scale(1.2);
+        }
+
+        /* ----- MUSIC BUTTON ----- */
+        .music-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 200;
+            background: rgba(255, 200, 210, 0.9);
+            backdrop-filter: blur(8px);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5e2a2f;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .music-btn:hover {
+            background: #ff99ae;
+            transform: scale(1.02);
+            color: white;
+        }
+
+        /* ----- BACK TO 2025 ----- */
+        .back-2025-btn {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 50;
+            background: rgba(255, 200, 210, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 200, 210, 0.15);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Segoe UI', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .back-2025-btn:hover {
+            background: rgba(255, 200, 210, 0.25);
+            transform: scale(1.04);
+            color: #fff;
+            border-color: rgba(255, 200, 210, 0.3);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .flex-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .image-column {
+                max-width: 100%;
+            }
+            .image-slider {
+                aspect-ratio: 1437 / 1599;
+                max-height: 300px;
+            }
+            #typewriter-wrapper {
+                max-height: 180px;
+            }
+            .card {
+                padding: 1.2rem 1rem;
+                max-height: 95dvh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .image-slider {
+                max-height: 220px;
+            }
+            #typewriter-wrapper {
+                max-height: 140px;
+            }
+            #typewriter {
+                font-size: 0.95rem;
+            }
+            .card-title {
+                font-size: 1.3rem;
+            }
+            .music-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.65rem;
+                top: 8px;
+                right: 8px;
+            }
+            .back-2025-btn {
+                padding: 0.3rem 0.7rem;
+                font-size: 0.65rem;
+                bottom: 12px;
+                right: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div id="bgDecor"></div>
+    <div class="glow-ring"></div>
+
+    <!-- ===== MUSIC BUTTON ===== -->
+    <button id="musicToggleBtn" class="music-btn">🔇 Music Off</button>
+
+    <!-- ===== MAIN CARD ===== -->
+    <div class="card">
+        <div class="card-title">💖 For My Forgoten Lover 💖</div>
+
+        <div class="flex-container">
+            <!-- LEFT: Typewriter Text (fully justified) -->
+            <div class="text-column">
+                <div id="typewriter-wrapper">
+                    <div id="typewriter">
+                        <span id="typewriter-text"></span><span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Image Carousel -->
+            <div class="image-column">
+                <div class="image-slider" id="imageSlider">
+                    <img id="sliderImg" src="images/image/one.jpg" alt="Birthday photo">
+                </div>
+                <div class="slider-controls">
+                    <button class="slider-btn" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                    <div class="slider-dots" id="sliderDots"></div>
+                    <button class="slider-btn" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BACK TO 2025 ===== -->
+    <a href="year2025.html" class="back-2025-btn">⬅ Back to 2025</a>
+
+    <!-- ===== AUDIO ===== -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="audio/Finding Her (Jana Mere Sawalon Ka Manzar Tu) _ Kushagra _ Vanshika Kashyap _ Bharath _ UR Debut(MP3_160K).mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ═══ DISABLE RIGHT-CLICK & DEVTOOLS KEYS ═══
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.onkeydown = function(e) {
+    if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+        return false;
+    }
+};
+        // ============================================================
+        // 1. FLOATING HEARTS & SPARKLES
+        // ============================================================
+        const bg = document.getElementById('bgDecor');
+        const emojis = ['❤️', '💖', '💕', '✨', '⭐', '💫', '🌸', '🌺', '💗'];
+
+        function createFloat() {
+            const el = document.createElement('div');
+            el.className = 'float-item';
+            const isHeart = Math.random() > 0.3;
+            el.textContent = isHeart ? ['❤️', '💖', '💕', '💗'][Math.floor(Math.random() * 4)] : emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.fontSize = (0.7 + Math.random() * 1.6) + 'rem';
+            el.style.animationDuration = (6 + Math.random() * 10) + 's';
+            el.style.animationDelay = (Math.random() * 8) + 's';
+            el.style.opacity = 0.2 + Math.random() * 0.4;
+            el.style.color = isHeart ? ['#ff6b6b', '#ffd93d', '#fd79a8', '#ff7675'][Math.floor(Math.random() * 4)] : '#ffd700';
+            bg.appendChild(el);
+            setTimeout(() => { if (el.parentNode) el.remove(); }, 18000);
+        }
+
+        for (let i = 0; i < 35; i++) setTimeout(createFloat, i * 250);
+        setInterval(createFloat, 3000);
+
+        // ============================================================
+        // 2. TYPEWRITER EFFECT (NO \n, fully justified)
+        // ============================================================
+        const textEl = document.getElementById('typewriter-text');
+        const message =
+            "Again 🎉Happy Birthday🎉 My Beauty Queen 👑 Abhi bhi din baki hai janamdin ka Thora rukogi kya Kehna hai tumhare bare mein tumse Zara sunogi kya... Kaise bataun me tumhe Mera liye tum kaun ho Tum mera dharkano ka geet ho Jeevan ka tum sangeet ho, Vivah Rachana caha jisse Tum meri wahi manpasand preet ho Tum zindagi tum bandagi Tum Roshni tum tazgi, Har Khushi, pyaar tumhi toh manmeet ho Aankhon mein tum Yaadon mein tum Needon mein tum Khwabon mein tum, Jaha dekhu mein waha ho tum Tum ho meri haar baat mein Tum ho mera din raat mein Tum subha mein tum shaam mein, Jaha dekhu mein waha ho tum Tum ho meri haar baat mein Tum ho mera din raat mein Tum subha mein tum shaam mein, Tum soch mein tum kaam mein Kuch na kru waha bhi tum Mera liye pana bhi tum Mera liye khona bhi tum, Mera tiye hasna bhi tum Mera liye rona bhi tum Aur jagna sona bhi tum Jau kahi dekhu jise, Tum ho waha tum ho wahi Kaise batau mein tumhe Tum bin toh mein kuch bhi nhi Tum bin toh mein zinda bhi nhi..., Mein tumko aasuon se likh raha hun Ki mera baad koi tumhe padh na paaye Suno Agar purani wali tum ko pata chalega na, Ki abhi wali tum mera sath kaise peshaa rhi ho Dil toot jaega uska Woh ladh legi tumse Woh jhagar legi tumse, Mera liye bandh kr degi tumhe Jaha tumne abi ushe rakha hai Mujhse iss trha baat nhi krne degi tumhe Mujhe bhi kuch sochna nhi prega tumhe bolne se pehale Lagta hai shikayat krni paregi tumhari Tumse... Tumhare diye hua dard se Zayada bara hai mera kiya hua pyaar Jao nhi nafrat krni tumse, Nahi bolna tumhare bare mein bhala bura Nahi batana tumhara naam aab kisi ko Keuki tumhare diye hua dard se Zayada bara hai tumhe kea hua mera pyaar..., Tum jitna toh koi mujhko khash nahi Tum jitna toh koi mujhko khash nahi Tujhse behatar ladka toh mil jaega Tekin meri Maa se toh behtar koi Saas nhi Aab thora mushkura bhi doo suruyaat mein khamoshi ko samajhne wale... aant mein cikheen bhi ansuni kr deta hai  I love you, my Misti Doi 💖";
+
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < message.length) {
+                textEl.innerHTML += message.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 65 + Math.random() * 30);
+            } else {
+                // keep cursor blinking
+                document.querySelector('.cursor').style.animation = 'blink 0.8s infinite';
+            }
+        }
+
+        setTimeout(typeWriter, 700);
+
+        // ============================================================
+        // 3. IMAGE CAROUSEL
+        // ============================================================
+        // 👇 CHANGE THESE TO YOUR ACTUAL IMAGE FILENAMES
+        const images = [
+            "images/image/one.jpg",
+            "images/image/tw.jpg",
+            "images/image/three.jpg",
+            "images/image/four.jpg",
+            "images/image/five.jpg",
+            "images/image/six.jpg",
+            "images/image/seven.jpg",
+            "images/image/eight.jpg",
+            "images/image/nine.jpg",
+            "images/image/ten.jpg",
+            "images/image/elev.jpg"
+        ];
+
+        let currentImgIndex = 0;
+        const sliderImg = document.getElementById('sliderImg');
+        const dotsContainer = document.getElementById('sliderDots');
+        const prevBtn = document.getElementById('prevSlide');
+        const nextBtn = document.getElementById('nextSlide');
+
+        // Create dots
+        images.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+            dot.dataset.index = i;
+            dot.addEventListener('click', () => goToImage(i));
+            dotsContainer.appendChild(dot);
+        });
+
+        function goToImage(index) {
+            if (index < 0) index = images.length - 1;
+            if (index >= images.length) index = 0;
+            currentImgIndex = index;
+            sliderImg.src = images[currentImgIndex];
+            document.querySelectorAll('.slider-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === currentImgIndex);
+            });
+        }
+
+        // Load first image on page start
+        document.addEventListener('DOMContentLoaded', function() {
+            goToImage(0);
+        });
+
+        prevBtn.addEventListener('click', () => goToImage(currentImgIndex - 1));
+        nextBtn.addEventListener('click', () => goToImage(currentImgIndex + 1));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevBtn.click();
+            else if (e.key === 'ArrowRight') nextBtn.click();
+        });
+
+        // ============================================================
+        // 4. CONFETTI BURST
+        // ============================================================
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+        document.body.prepend(canvas);
+
+        const ctx = canvas.getContext('2d');
+        let W, H, confetti = [];
+
+        function resizeC() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        resizeC();
+        window.addEventListener('resize', resizeC);
+
+        function burst(count = 130) {
+            const colors = ['#ff0', '#f0f', '#0ff', '#f44', '#4f4', '#44f', '#ff8800', '#ff44aa', '#aaff44', '#ffaa00', '#ff6b6b', '#ffd93d'];
+            for (let i = 0; i < count; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const s = 3 + Math.random() * 14;
+                confetti.push({
+                    x: W / 2 + (Math.random() - 0.5) * 100,
+                    y: H / 2 + (Math.random() - 0.5) * 80,
+                    vx: Math.cos(a) * s * (0.5 + Math.random() * 0.6),
+                    vy: Math.sin(a) * s * (0.5 + Math.random() * 0.6) - 2,
+                    size: 4 + Math.random() * 10,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 1,
+                    decay: 0.005 + Math.random() * 0.015,
+                    rot: Math.random() * 360,
+                    rSpeed: (Math.random() - 0.5) * 0.2,
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                });
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, W, H);
+            for (let i = confetti.length - 1; i >= 0; i--) {
+                const p = confetti[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.08;
+                p.vx *= 0.99;
+                p.vy *= 0.99;
+                p.life -= p.decay;
+                p.rot += p.rSpeed;
+                if (p.life <= 0 || p.y > H + 50 || p.x < -50 || p.x > W + 50) { confetti.splice(i, 1); continue; }
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot * Math.PI / 180);
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                if (p.shape === 'rect') {
+                    ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+
+        burst(160);
+        setTimeout(() => burst(100), 400);
+        animateConfetti();
+
+        // ============================================================
+        // 5. MUSIC BUTTON
+        // ============================================================
+        const audio = document.getElementById('bgAudio');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        let isMusicPlaying = false;
+
+        if (audio && musicBtn) {
+            audio.volume = 0.2;
+            audio.loop = true;
+            musicBtn.innerText = "🔇 Music Off";
+
+            musicBtn.addEventListener('click', () => {
+                if (isMusicPlaying) {
+                    audio.pause();
+                    musicBtn.innerText = "🔇 Music Off";
+                    isMusicPlaying = false;
+                } else {
+                    audio.play().catch(e => console.log("Audio play error:", e));
+                    musicBtn.innerText = "🎵 Music On";
+                    isMusicPlaying = true;
+                }
+            });
+
+            audio.addEventListener('ended', () => {
+                isMusicPlaying = false;
+                musicBtn.innerText = "🔇 Music Off";
+            });
+        }
+
+        console.log('💖 tatti.html – message updated, fully justified!');
+    </script>
+</body>
+</html>

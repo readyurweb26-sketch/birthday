@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Use | Birthday Wish Guide</title>
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #fff0f5, #ffe0e7);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .guide-card {
+            max-width: 700px;
+            background: white;
+            border-radius: 48px;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 { color: #b83b5e; margin-bottom: 1rem; }
+        h2 { color: #d45c7a; margin: 1.2rem 0 0.5rem; font-size: 1.4rem; }
+        ul { text-align: left; margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin: 0.7rem 0; color: #3b2c2a; }
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            background: #ffb7c5;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #5e2a2f;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .back-btn:hover { background: #ff99ae; color: white; }
+        footer { margin-top: 2rem; font-size: 0.8rem; color: #a55c6e; }
+    </style>
+</head>
+<body>
+<div class="guide-card">
+    <h1>🎁 Birthday Wish Page – Quick Guide</h1>
+    <p>Everything is designed to be simple & joyful. Here's how it works:</p>
+    
+    <h2>✨ Main Features</h2>
+    <ul>
+        <li><strong>Top Typewriter Text:</strong> The birthday wish appears letter by letter, then gently bulges. It's above the photo.</li>
+        <li><strong>Central Photo:</strong> Your person's image with floating balloons, a cake overlay, and sparkles.</li>
+        <li><strong>Year Slider:</strong> Click the <strong>‹</strong> and <strong>›</strong> buttons or <strong>click the year number</strong> – it flickers! Each year shows a special message.</li>
+        <li><strong>Background Music:</strong> No play button – just click anywhere on the page after it loads, and the song starts softly (low volume). You can change the song URL in <code>script.js</code>.</li>
+        <li><strong>Guide Button:</strong> Top‑right corner – opens this page again if needed.</li>
+    </ul>
+
+    <h2>🛠️ Customization (for you, the maker)</h2>
+    <ul>
+        <li>Open <code>script.js</code> – edit <code>CUSTOM_PERSON_IMAGE</code>, <code>CUSTOM_CAKE_IMAGE</code>, <code>BIRTHDAY_WISH</code>, <code>BACKGROUND_MUSIC_URL</code>, and <code>YEARS_DATA</code>.</li>
+        <li>All colors, shadows, and animations can be tweaked in <code>style.css</code>.</li>
+        <li>The page is fully responsive – works on phones, tablets, and desktops.</li>
+    </ul>
+
+    <h2>🎵 Important Music Note</h2>
+    <ul>
+        <li>Browsers block auto‑playing audio. That's why you need to <strong>click/tap anywhere</strong> on the main page to enable the song. After that, it plays quietly in a loop.</li>
+        <li>To replace the song, change <code>BACKGROUND_MUSIC_URL</code> to your own MP3 link.</li>
+    </ul>
+
+    <a href="index.html" class="back-btn">← Back to Birthday Page</a>
+    <footer>💖 Made with love – every detail is adjustable</footer>
+</div>
+</body>
+</html>
