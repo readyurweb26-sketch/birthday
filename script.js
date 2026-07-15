@@ -6,7 +6,7 @@ document.onkeydown = function(e) {
 
 // ========== CUSTOMIZATION ==========
 const CUSTOM_BG_IMAGE = "images/background.png";
-const CUSTOM_PERSON_IMAGE = "https://picsum.photos/id/169/560/700";
+const CUSTOM_PERSON_IMAGE = "images/1.jpg";
 const BIRTHDAY_WISH = "🎂 Happy Birthday Bipasha 🎉💖";
 const BACKGROUND_MUSIC_URL = "audio/soulprodmusic-happy-birthday-220024.mp3";
 const FIREWORK_SOUND_URL = "audio/firework-cracker.mp3";
