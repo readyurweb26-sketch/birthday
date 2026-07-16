@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -26,22 +28,41 @@
 
     <canvas id="effectsCanvas"></canvas>
 
-    <!-- Top Right Glass Buttons -->
-    <div class="top-right-buttons">
-        <button id="guideBtn" class="glass-btn">
-            <i data-lucide="info"></i> Guide
-        </button>
-        <button id="musicToggleBtn" class="glass-btn">
-            <i data-lucide="music"></i> <span id="musicLabel">Music Off</span>
-            <div class="visualizer" id="visualizerBars" style="display:none;">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
+    <!-- ══════ FIXED GLASS NAVBAR ══════ -->
+    <header class="glass-nav" id="glassNav">
+        <div class="glass-nav-inner">
+            <a href="#hero" class="nav-brand" id="navBrand">
+                <span class="nav-brand-icon">👑</span>
+                <span class="nav-brand-text">Bipasha</span>
+            </a>
+
+            <nav class="nav-links" id="navLinks" aria-label="Year navigation"></nav>
+
+            <div class="nav-actions">
+                <button id="guideBtn" class="glass-btn">
+                    <i data-lucide="info"></i> <span class="btn-label">Guide</span>
+                </button>
+                <button id="musicToggleBtn" class="glass-btn">
+                    <i data-lucide="music"></i> <span id="musicLabel" class="btn-label">Music Off</span>
+                    <div class="visualizer" id="visualizerBars" style="display:none;">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </button>
+                <button id="hamburgerBtn" class="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
-        </button>
-    </div>
+        </div>
+
+        <!-- Mobile dropdown menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-links" id="mobileMenuLinks"></div>
+        </div>
+    </header>
 
     <!-- Card Transparency Slider -->
     <div class="brightness-control">
@@ -52,49 +73,71 @@
     <!-- Page Transition Overlay -->
     <div class="page-transition" id="pageTransition"></div>
 
-    <!-- Birthday Card -->
+    <!-- Scroll progress rail -->
+    <div class="scroll-progress" id="scrollProgress"><div class="scroll-progress-fill" id="scrollProgressFill"></div></div>
+
+    <!-- ══════ SCROLLABLE PAGE ══════ -->
+    <main id="pageRoot">
+
+    <!-- ═══ HERO / BIRTHDAY CARD (unchanged content) ═══ -->
+    <section class="panel hero-panel" id="hero">
     <div class="birthday-container" id="birthdayCard">
 
-    <!-- Crown placed above typewriter text -->
-    <div class="crown-above">👑</div>
+        <!-- Crown placed above typewriter text -->
+        <div class="crown-above">👑</div>
 
-    <div class="wish-above">
-        <div class="typewriter-text" id="wishTextDisplay"></div>
-        <div class="rotating-message" id="rotatingMessage">Today is your day 🎂</div>
-    </div>
+        <div class="wish-above">
+            <div class="typewriter-text" id="wishTextDisplay"></div>
+            <div class="rotating-message" id="rotatingMessage">Today is your day 🎂</div>
+        </div>
 
-        <div class="portrait-zone">
-            <div class="image-frame">
-                <img class="person-photo" id="personImg" src="images/1.jpg" alt="Birthday Star">
-                <div class="photo-hover-card">🌟 Birthday Queen<br>💖 Beautiful Soul<br>✨ Loved Forever</div>
-                <div class="cake-overlay-img" id="cakeOverlay">
-                    🎂
-                    <div class="candle-flame" id="candleFlame"></div>
-                </div>
-                <div class="deco-set">
-                    <div class="deco-item balloon-1">🎈</div>
-                    <div class="deco-item balloon-2">🎀</div>
-                    <div class="deco-item balloon-3">✨</div>
-                    <div class="deco-item balloon-4">🎁</div>
-                    <div class="deco-item balloon-5">🌟</div>
-                    <div class="deco-item balloon-6">💖</div>
+        <!-- Kept in the DOM (hidden) so every original function/element
+             reference still works with zero console errors — just not
+             shown, per request to keep the hero to crown + wish text only. -->
+        <div class="hero-legacy" aria-hidden="true">
+            <div class="portrait-zone">
+                <div class="image-frame">
+                    <img class="person-photo" id="personImg" src="images/1.jpg" alt="Birthday Star">
+                    <div class="photo-hover-card">🌟 Birthday Queen<br>💖 Beautiful Soul<br>✨ Loved Forever</div>
+                    <div class="cake-overlay-img" id="cakeOverlay">
+                        🎂
+                        <div class="candle-flame" id="candleFlame"></div>
+                    </div>
+                    <div class="deco-set">
+                        <div class="deco-item balloon-1">🎈</div>
+                        <div class="deco-item balloon-2">🎀</div>
+                        <div class="deco-item balloon-3">✨</div>
+                        <div class="deco-item balloon-4">🎁</div>
+                        <div class="deco-item balloon-5">🌟</div>
+                        <div class="deco-item balloon-6">💖</div>
+                    </div>
                 </div>
             </div>
+
+            <div class="year-timeline" id="yearTimeline"></div>
+
+            <div class="year-message-card">
+                <div class="year-message" id="yearMessageText"></div>
+            </div>
+
+            <footer>
+                ✨ Blow the candle | Use transparency slider | Tap year to travel ✨
+                <br>
+                <button id="loveLetterBtn" class="surprise-btn">💌 Open Surprise</button>
+            </footer>
         </div>
-
-        <!-- Timeline Years -->
-        <div class="year-timeline" id="yearTimeline"></div>
-
-        <div class="year-message-card">
-            <div class="year-message" id="yearMessageText"></div>
-        </div>
-
-        <footer>
-            ✨ Blow the candle | Use transparency slider | Tap year to travel ✨
-            <br>
-            <button id="loveLetterBtn" class="surprise-btn">💌 Open Surprise</button>
-        </footer>
     </div>
+
+    <div class="scroll-cue" id="scrollCue">
+        <span>Scroll through the years</span>
+        <i data-lucide="chevron-down"></i>
+    </div>
+    </section>
+
+    <!-- ═══ YEAR SECTIONS (generated by script.js → buildYearSections) ═══ -->
+    <div class="years-scroll" id="yearsScroll"></div>
+
+    </main>
 
     <!-- Love Letter Modal -->
     <div class="love-modal" id="loveModal">
@@ -114,5 +157,8 @@
     </audio>
 
     <script src="script.js"></script>
+    <!-- Analytics + footer credit: additive only, does not touch script.js/style.css -->
+    <script>window.__LADDOO_ANALYTICS_ENDPOINT__ = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';</script>
+    <script src="analytics.js" defer></script>
 </body>
 </html>
